@@ -1,0 +1,8 @@
+POST http://10.246.97.75:8011/sso/admin/getinfo
+Content-Type: application/json
+
+{
+  "username": "uig27066"
+}
+
+###

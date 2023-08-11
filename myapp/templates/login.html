@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            background-color: #f0e9e2; /* 更淡的背景颜色 */
+            font-family: Arial, sans-serif;
+        }
+        .login-container {
+            width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .login-header {
+            text-align: center;
+            color: orange;
+        }
+        .login-header img {
+            height: 100px; /* 增大图像的大小 */
+        }
+        .login-form {
+            padding: 20px;
+        }
+        .login-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .login-input label {
+            width: 100px;
+            color: orange;
+        }
+        .login-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid orange;
+            border-radius: 4px;
+        }
+        .login-button {
+            width: 100%;
+            padding: 10px;
+            background-color: orange;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .error-message {
+            color: red;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <img src="{% static 'images/Continental Logo.png' %}" alt="Continental Logo">
+            <h1>Continental</h1>
+            <h2>PM Login Page</h2>
+        </div>
+        <div class="login-form">
+            {% if message %}
+                <div class="error-message">{{ message }}</div>
+            {% endif %}
+            <form action="{% url 'login_page' %}" method="post">
+                {% csrf_token %}
+                <div class="login-input">
+                    <label for="username">Username:</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="login-input">
+                    <label for="password">Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="login-button">Login</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

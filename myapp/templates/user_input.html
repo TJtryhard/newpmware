@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New User Input</title>
+</head>
+<body>
+    <h1>New User Input</h1>
+    <form action="{% url 'user_input_page' %}" method="post">
+        {% csrf_token %}
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br><br>
+        
+        <!-- 添加更多输入字段 -->
+
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

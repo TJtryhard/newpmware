@@ -1,0 +1,67 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background-color: #f0e9e2;
+    padding: 20px; /* 调整页边距 */
+}
+
+#logo-button {
+    cursor: pointer;
+    display: block; /* 可以设置为块级元素以消除周围的空白 */
+    width: 150px; /* 限制图像宽度 */
+    height: auto; /* 高度自动调整以保持长宽比 */
+}
+
+h1, h2 {
+    color: #fbae5b;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+/* Adjust the width for specific columns */
+th:nth-child(1), th:nth-child(3),
+td:nth-child(1), td:nth-child(3) {
+    width: 15%;
+}
+
+th:nth-child(2), th:nth-child(4),
+td:nth-child(2), td:nth-child(4) {
+    width: 35%;
+}
+
+th {
+    background-color: #fbae5b;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.edit-button {
+    background-color: #fbae5b;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.edit-button:hover {
+    background-color: #f98c2f;
+}

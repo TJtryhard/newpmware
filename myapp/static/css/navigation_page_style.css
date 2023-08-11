@@ -1,0 +1,48 @@
+body {
+    background-color: #f0e9e2;
+    font-family: Arial, sans-serif;
+    margin: 50px;
+}
+h1, h2, h3 {
+    color: orange;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+th, td {
+    padding: 20px;
+    border: 1px solid #ddd;
+    text-align: center;
+}
+th {
+    background-color: orange;
+    color: white;
+}
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+button {
+    background-color: orange;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    display: inline-block;
+    text-align: center;
+}
+.start-new-project-button {
+    margin-right: 20px;
+}
+a {
+    text-decoration: none;
+}
+.status-color {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    vertical-align: middle;
+    margin-right: 5px;
+}

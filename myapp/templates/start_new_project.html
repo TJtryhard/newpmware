@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>New Project Table (General Information)</title>
+    <link rel="stylesheet" href="{% static 'css/start_new_project_style.css' %}">
+</head>
+
+<body>
+    <div class="header">
+        <a href="http://127.0.0.1:8000/navigation/"><img src="{% static 'images/Continental Logo.png' %}" alt="Logo" class="logo"></a>
+        <h1>New Project Table (General Information)</h1>
+    </div>
+
+    <div class="container">
+        {% for attribute in attributes_before_project_type %}
+        <p>{{ attribute }}:
+            {% if attribute == "Estimated Budget" %}
+            <input type='text' name='estimated_budget' style='width: 100px;' /> KCNY
+            {% elif attribute == "IRR" %}
+            <input type='text' name='irr' style='width: 100px;' /> %
+            {% elif attribute == "Project Manager" %}
+            <select name="manager">
+                {% for manager in managers %}
+                <option value="{{ manager }}">{{ manager }}</option>
+                {% endfor %}
+            </select>
+            {% else %}
+            <input type='text' name='input-field' />
+            {% endif %}
+        </p>
+        {% endfor %}
+
+        <p>Project Type:
+            <label><input type="radio" name="project-type" value="SPA" /> SPA</label>
+            <label><input type="radio" name="project-type" value="PLP" /> PLP</label>
+        </p>
+
+        {% for date_attribute in date_attributes %}
+        <p>{{ date_attribute }}: <input type='date' name='date-field' /></p>
+        {% endfor %}
+
+        {% for attribute in attributes_after_project_type_and_dates %}
+        <p>{{ attribute }}:
+            {% if attribute == "Main Target" %}
+            <!-- Main target functionality goes here -->
+            <div id="main_target_container">
+                <!-- No preset main target here, it will be added dynamically by JavaScript -->
+            </div>
+            <button type="button" onclick="addMainTarget()">Add More</button>
+            {% elif attribute == "Facilitator" %}
+            <select name="facilitator">
+                {% for facilitator in facilitators %}
+                <option value="{{ facilitator }}">{{ facilitator }}</option>
+                {% endfor %}
+            </select>
+            {% elif attribute == "Steering committee" %}
+            <select name="steering_committee">
+                {% for member in steering_committee %}
+                <option value="{{ member }}">{{ member }}</option>
+                {% endfor %}
+            </select>
+            {% else %}
+            <input type='text' name='input-field' />
+            {% endif %}
+        </p>
+        {% endfor %}
+
+        <button class="custom-button">Save</button>
+        <button class="custom-button">Submit</button>
+        <button class="custom-button" id="clear-all-button">Clear All</button>
+    </div>
+
+    <script>
+        let mainTargetCount = 0; // start with 0
+        const maxMainTargetCount = 4;
+
+        function addMainTarget() {
+            if (mainTargetCount < maxMainTargetCount) {
+                mainTargetCount++;
+
+                let mainTargetDiv = document.createElement('div');
+                mainTargetDiv.className = 'main_target_item';
+                mainTargetDiv.id = 'main_target_' + mainTargetCount;
+
+                let input = document.createElement('input');
+                input.type = 'text';
+                input.name = 'main_target_input_' + mainTargetCount;
+
+                let deleteButton = document.createElement('button');
+                deleteButton.innerText = 'Delete';
+                deleteButton.type = 'button';
+                deleteButton.onclick = function() {
+                    deleteMainTarget(mainTargetDiv.id);
+                };
+
+                mainTargetDiv.appendChild(input);
+                mainTargetDiv.appendChild(deleteButton);
+
+                document.getElementById('main_target_container').appendChild(mainTargetDiv);
+
+                if (mainTargetCount === 1) {
+                    document.getElementById('main_target_1').querySelector('button').style.display = 'none';
+                }
+            }
+        }
+
+        function deleteMainTarget(targetId) {
+            var target = document.getElementById(targetId);
+            target.remove();
+            mainTargetCount--;
+
+            var items = document.getElementsByClassName("main_target_item");
+            for (var i = 0; i < items.length; i++) {
+                items[i].id = "main_target_" + (i + 1);
+                var input = items[i].querySelector('input');
+                input.name = "main_target_input_" + (i + 1);
+            }
+
+            if (mainTargetCount === 1) {
+                document.getElementById('main_target_1').querySelector('button').style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            addMainTarget();
+        });
+    </script>
+
+</body>
+</html>
