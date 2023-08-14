@@ -12,16 +12,24 @@
     <h2>See Existing Project</h2>
     <table>
         <tr>
-            <th>No.</th>
+            <th>Project ID</th>
             <th>Project Name</th>
             <th>Project Manager</th>
-            <th>Project ID</th>
+            <th>Project Type</th>
             <th>Status</th>
         </tr>
-        <tr><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+        <tbody>
+        {% for project in projects %}
+        <tr>
+            <td>{{ project.projectid }}</td>
+            <td>{{ project.project_name}}</td>
+            <td>{{ project.pm.name}}</td>
+            <td>{{ project.project_type }}</td>
+            <td>{{ project.project_status }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+
     </table>
     <h3>Status Description:</h3>
     <p><span class="status-color" style="background-color:orange;"></span> Project Completed.</p>

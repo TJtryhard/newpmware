@@ -13,6 +13,7 @@ def start_page(request):
         password = request.POST.get('password')
 
         result = sign_in(username)
+        #print(result.pm)
 
         if result:
             return redirect('navigation_page') # 跳转到导航页面
@@ -35,7 +36,8 @@ def start_page(request):
 
 
 def navigation_page(request):
-    return render(request, 'navigation_page.html')
+    user_projects = get_user_projects('uig27066')
+    return render(request, 'navigation_page.html',{'projects':user_projects})
 
 
 ###################### Start New Project 用户创建新项目网页
@@ -145,9 +147,16 @@ def add_user(info):
 
     return new_user
 
+
 def get_user_projects(pm):
     pm = Users.objects.get(pm=pm)
     projects = Projects.objects.filter(pm=pm)
+    project_list = projects.values('project_name','project_manager','pm','project_status')
+    return projects
+
+
+def new_project(pm):
+    pass
 
 
     #user_projects = {'project1':'project info', 'project2':'project info'}
