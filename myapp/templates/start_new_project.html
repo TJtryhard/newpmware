@@ -13,6 +13,10 @@
         <h1>New Project Table (General Information)</h1>
     </div>
 
+    <form action="/submit_new_project/" method="post">
+        {% csrf_token %}
+        
+
     <div class="container">
         {% for attribute in attributes_before_project_type %}
         <p>{{ attribute }}:
@@ -64,9 +68,14 @@
 
         <button class="custom-button" onclick="saveDataToLocal()">Save</button>
 
-        <button class="custom-button">Submit</button>
+
+        <button class="custom-button" type="submit">Submit</button>
+
         <button class="custom-button" id="clear-all-button">Clear All</button>
     </div>
+
+    </form>
+
 
     <script>
         let counters = {

@@ -17,7 +17,8 @@ def start_page(request):
 
         if result:
             return redirect('navigation_page') # 跳转到导航页面
-        #session here
+
+        
 
         else:
             message = "Invalid user!" # 如果用户名或密码错误，添加一个消息
@@ -38,6 +39,8 @@ def start_page(request):
 def navigation_page(request):
     user_projects = get_user_projects('uig27066')
     return render(request, 'navigation_page.html',{'projects':user_projects})
+
+
 
 
 ###################### Start New Project 用户创建新项目网页
@@ -110,15 +113,8 @@ def preview_closure(request):
 
 def sign_in(username):
 
-    url = 'http://10.246.97.75:8011/sso/admin/getinfo'
-    data = {
-        'username': username
-    }
-    response = requests.post(url, data=data)
-    data = response.json()
-
-    code = data['code']
-    if code == 200:
+    data = {}
+    if True:
         try:
             instance = Users.objects.get(pm=username)
             return instance
@@ -162,3 +158,31 @@ def new_project(pm):
     #user_projects = {'project1':'project info', 'project2':'project info'}
     #return user_projects
 
+from django.shortcuts import render, redirect
+from .models import Projects
+
+def submit_new_project(request):
+    if request.method == 'POST':
+        # 从 POST 数据中获取表单数据
+        project_id = request.POST.get('project_id')
+        project_name = request.POST.get('project_name')
+        estimated_budget = request.POST.get('estimated_budget')
+        irr = request.POST.get('irr')
+        project_manager = request.POST.get('project_manager')
+        # ... 获取其他表单字段
+
+        # 创建一个新的项目实例并保存到数据库
+        project = Projects(
+            project_id=project_id,
+            project_name=project_name,
+            estimated_budget=estimated_budget,
+            irr=irr,
+            project_manager=project_manager,
+            # ... 其他字段
+        )
+        project.save()
+
+        # 提交完成后，重定向到 navigation 页面
+        return redirect('navigation_page')
+
+    return render(request, 'start_new_project.html')
