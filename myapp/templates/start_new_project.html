@@ -21,11 +21,7 @@
             {% elif attribute == "IRR" %}
             <input type='text' name='irr' style='width: 100px;' /> %
             {% elif attribute == "Project Manager" %}
-            <select name="manager">
-                {% for manager in managers %}
-                <option value="{{ manager }}">{{ manager }}</option>
-                {% endfor %}
-            </select>
+            <input type='text' name='project_manager' />
             {% else %}
             <input type='text' name='input-field' />
             {% endif %}
@@ -43,12 +39,11 @@
 
         {% for attribute in attributes_after_project_type_and_dates %}
         <p>{{ attribute }}:
-            {% if attribute == "Main Target" %}
-            <!-- Main target functionality goes here -->
-            <div id="main_target_container">
+            {% if attribute == "Main Target" or attribute == "Boundary Conditions" or attribute == "Out of Scope" or attribute == "Risk and Uncertainties" %}
+            <div id="{{attribute|slugify}}_container">
                 <!-- No preset main target here, it will be added dynamically by JavaScript -->
             </div>
-            <button type="button" onclick="addMainTarget()">Add More</button>
+            <button type="button" onclick="addItem('{{attribute|slugify}}')">Add More</button>
             {% elif attribute == "Facilitator" %}
             <select name="facilitator">
                 {% for facilitator in facilitators %}
@@ -67,65 +62,137 @@
         </p>
         {% endfor %}
 
-        <button class="custom-button">Save</button>
+        <button class="custom-button" onclick="saveDataToLocal()">Save</button>
+
         <button class="custom-button">Submit</button>
         <button class="custom-button" id="clear-all-button">Clear All</button>
     </div>
 
     <script>
-        let mainTargetCount = 0; // start with 0
-        const maxMainTargetCount = 4;
-
-        function addMainTarget() {
-            if (mainTargetCount < maxMainTargetCount) {
-                mainTargetCount++;
-
-                let mainTargetDiv = document.createElement('div');
-                mainTargetDiv.className = 'main_target_item';
-                mainTargetDiv.id = 'main_target_' + mainTargetCount;
-
+        let counters = {
+            "main-target": 0,
+            "boundary-conditions": 0,
+            "out-of-scope": 0,
+            "risk-and-uncertainties":0,
+        };
+        const maxCount = 4;
+            
+        function addItem(attribute) {
+            if (counters[attribute] < maxCount) {
+                counters[attribute]++;
+                let div = document.createElement('div');
+                div.className = attribute + '_item';
+                div.id = attribute + '_' + counters[attribute];
+                
                 let input = document.createElement('input');
                 input.type = 'text';
-                input.name = 'main_target_input_' + mainTargetCount;
-
+                input.name = attribute + '_input_' + counters[attribute];
+                
                 let deleteButton = document.createElement('button');
                 deleteButton.innerText = 'Delete';
                 deleteButton.type = 'button';
                 deleteButton.onclick = function() {
-                    deleteMainTarget(mainTargetDiv.id);
+                    deleteItem(attribute, div.id);
                 };
-
-                mainTargetDiv.appendChild(input);
-                mainTargetDiv.appendChild(deleteButton);
-
-                document.getElementById('main_target_container').appendChild(mainTargetDiv);
-
-                if (mainTargetCount === 1) {
-                    document.getElementById('main_target_1').querySelector('button').style.display = 'none';
+                
+                div.appendChild(input);
+                div.appendChild(deleteButton);
+                document.getElementById(attribute + '_container').appendChild(div);
+    
+                if (counters[attribute] === 1) {
+                    document.getElementById(attribute + '_1').querySelector('button').style.display = 'none';
                 }
             }
         }
-
-        function deleteMainTarget(targetId) {
+    
+        function deleteItem(attribute, targetId) {
             var target = document.getElementById(targetId);
             target.remove();
-            mainTargetCount--;
-
-            var items = document.getElementsByClassName("main_target_item");
+            counters[attribute]--;
+            var items = document.getElementsByClassName(attribute + "_item");
             for (var i = 0; i < items.length; i++) {
-                items[i].id = "main_target_" + (i + 1);
+                items[i].id = attribute + "_" + (i + 1);
                 var input = items[i].querySelector('input');
-                input.name = "main_target_input_" + (i + 1);
+                input.name = attribute + "_input_" + (i + 1);
             }
-
-            if (mainTargetCount === 1) {
-                document.getElementById('main_target_1').querySelector('button').style.display = 'none';
+            if (counters[attribute] === 1) {
+                document.getElementById(attribute + '_1').querySelector('button').style.display = 'none';
             }
         }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            addMainTarget();
+    
+        document.getElementById("clear-all-button").addEventListener("click", function() {
+            // 清除所有input标签的值
+            var inputs = document.querySelectorAll("input");
+            for (var i = 0; i < inputs.length; i++) {
+                if(inputs[i].type === 'radio' || inputs[i].type === 'checkbox') {
+                    inputs[i].checked = false;
+                } else {
+                    inputs[i].value = '';
+                }
+            }
+            
+            // 清除所有select标签的选项
+            var selects = document.querySelectorAll("select");
+            for (var i = 0; i < selects.length; i++) {
+                selects[i].selectedIndex = 0;
+            }
+            
+            // 删除所有动态添加的项
+            for (const key in counters) {
+                while(counters[key] > 1) {
+                    deleteItem(key, key + "_" + counters[key]);
+                }
+            }
         });
+    
+        document.addEventListener('DOMContentLoaded', function() {
+            addItem('main-target');
+            addItem('boundary-conditions');
+            addItem('out-of-scope')
+            addItem('risk-and-uncertainties');
+            loadDataFromLocal();
+        });
+    
+        function saveDataToLocal() {
+    var inputs = document.querySelectorAll("input, select");
+    var data = {};
+
+    inputs.forEach(function(input) {
+        if(input.type === 'radio' || input.type === 'checkbox') {
+            if(input.checked) {
+                data[input.name] = input.value;
+            }
+        } else {
+            data[input.name] = input.value;
+        }
+    });
+
+    localStorage.setItem('savedData', JSON.stringify(data));
+}
+
+function loadDataFromLocal() {
+    var savedData = localStorage.getItem('savedData');
+
+    if(savedData) {
+        var data = JSON.parse(savedData);
+        
+        for(var key in data) {
+            var input = document.querySelector("[name='" + key + "']");
+            if(input) {
+                if(input.type === 'radio' || input.type === 'checkbox') {
+                    if(data[key] === input.value) {
+                        input.checked = true;
+                    }
+                } else {
+                    input.value = data[key];
+                }
+            }
+        }
+    }
+}
+
+
+
     </script>
 
 </body>

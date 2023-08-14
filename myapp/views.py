@@ -35,43 +35,7 @@ def start_page(request):
 
 
 def navigation_page(request):
-
-    html = """
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Navigation Page</title>
-        <link rel="stylesheet" href="/static/css/navigation_page_style.css"> <!-- Linking the external CSS file -->
-    </head>
-    <body>
-        <h1>Navigation Page</h1>
-        <a href="http://127.0.0.1:8000/start_new_project/"><button class="start-new-project-button">Start New Project</button></a>
-        <a href="http://127.0.0.1:8000/project_site/"><button>Project Site</button></a>
-        <h2>See Existing Project</h2>
-        <table>
-            <tr>
-                <th>No.</th>
-                <th>Project Name</th>
-                <th>Project Manager</th>
-                <th>Project ID</th>
-                <th>Status</th>
-            </tr>
-            <tr><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td><td></td><td></td></tr>
-            <tr><td></td><td></td><td></td><td></td><td></td></tr>
-        </table>
-        <h3>Status Description:</h3>
-        <p><span class="status-color" style="background-color:orange;"></span> Project Completed.</p>
-        <p><span class="status-color" style="background-color:green;"></span> Progressing Satisfactorily.</p>
-        <p><span class="status-color" style="background-color:#FFFF66;"></span> Project Marginally at Risk.</p>
-        <p><span class="status-color" style="background-color:red;"></span> Project Significantly at Risk.</p>
-        <p><span class="status-color" style="background-color:black;"></span> Project Cancelled.</p>
-    </body>
-    </html>
-    """
-    return HttpResponse(html)
+    return render(request, 'navigation_page.html')
 
 
 ###################### Start New Project 用户创建新项目网页
@@ -79,20 +43,19 @@ def navigation_page(request):
 from django.http import HttpResponse
 
 from django.shortcuts import render
-
 def start_new_project(request):
     context = {
         "attributes_before_project_type": [
             "Project ID",
             "Project Name",
-            "Project Manager",  # 添加 "Project Manager" 回到这里
+            "Project Manager", 
             "Estimated Budget",
             "IRR",
             "Project Status"
         ],
         "managers": ["Apple", "Banana", "Cherry", "Durian", "Elderberry", "Fig", "Grape"],
-        "facilitators": ["Jing", "Lisa", "Runkun Wang"],
-        "steering_committee": ["Jeff", "Yuan", "Yi", "Brian"],
+        "facilitators": ["Jing Yang", "Lisa Shi", "Runkun Wang"],
+        "steering_committee": ["Jeff Wang", "Yuan Zhou", "Yi Sun", "Brian Yang", "Li Yan", "Tony Huang", "Sam Guo", "Rowena Tao","Covey Wang", "Hairui Liu", "Bingyan Wang", "Abhishek Kumar"],
         
         "date_attributes": [
             "Kickoff Time",
@@ -113,7 +76,6 @@ def start_new_project(request):
     }
     
     return render(request, 'start_new_project.html', context)
-
 
 
 
