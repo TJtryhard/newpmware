@@ -184,6 +184,10 @@ def add_user(info):
     return new_user
 
 def get_user_projects(pm):
-    user_projects = {'project1':'project info', 'project2':'project info'}
-    return user_projects
+    pm = Users.objects.get(pm=pm)
+    projects = Projects.objects.filter(pm=pm)
+
+
+    #user_projects = {'project1':'project info', 'project2':'project info'}
+    #return user_projects
 
