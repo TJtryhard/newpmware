@@ -13,13 +13,25 @@ class Users(models.Model):
 
 
 class Projects(models.Model):
+    STATUS_CHOICES = [
+        ('red','red'),
+        ('yellow','yellow'),
+        ('green','green'),
+        ('grey','grey'),
+    ]
+
+    TYPE_CHOICES = {
+        ('SPA','SPA'),
+        ('PLP','PLP'),
+    }
+
     projectid = models.AutoField(db_column='ProjectID', primary_key=True)  # Field name made lowercase.
     project_name = models.CharField(db_column='Project_name', max_length=200)  # Field name made lowercase.
     pm = models.ForeignKey('Users', models.DO_NOTHING, db_column='PM', blank=True, null=True)  # Field name made lowercase.
     estimated_budget = models.IntegerField(db_column='Estimated_budget', blank=True, null=True)  # Field name made lowercase.
     irr = models.IntegerField(db_column='IRR', blank=True, null=True)  # Field name made lowercase.
-    project_status = models.IntegerField(db_column='Project_status', blank=True, null=True)  # Field name made lowercase.
-    project_type = models.CharField(db_column='Project_type', max_length=30, blank=True, null=True)  # Field name made lowercase.
+    project_status = models.CharField(db_column='Project_status',choices=STATUS_CHOICES, max_length=10, default='green')  # Field name made lowercase.
+    project_type = models.CharField(db_column='Project_type',choices=TYPE_CHOICES, max_length=30, blank=True, null=True)  # Field name made lowercase.
     project_manager = models.CharField(db_column='Project_manager', max_length=50, blank=True, null=True)  # Field name made lowercase.
     project_team = models.CharField(db_column='Project_team', max_length=200, blank=True, null=True)  # Field name made lowercase.
     timing_kickoff = models.DateField(db_column='Timing_kickoff', blank=True, null=True)  # Field name made lowercase.

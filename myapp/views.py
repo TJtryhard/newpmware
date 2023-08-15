@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 import requests
@@ -155,10 +155,83 @@ def get_user_projects(pm):
     return projects
 
 
-def new_project(pm):
-    pass
+def new_project(request):
+    try:
+        if request.method == 'POST':
+            project_name = request.POST.get('project_name')
+            pm = request.POST.get('pm')
+            estimated_budget = request.POST.get('estimated_budget')
+            irr = request.POST.get('IRR')
+            project_status = request.POST.get('project_status')
+            project_type = request.POST.get('project_type')
+            project_manager = request.POST.get('project_manager')
+            project_team = request.POST.get('project_team')
 
+            timing_kickoff = request.POST.get('timing_kickoff')
+            timing_closure = request.POST.get('timing_closure')
+            timing_milestone1 = request.POST.get('timing_milestone1')
+            timing_milestone2 = request.POST.get('timing_milestone2')
+            timing_milestone3 = request.POST.get('timing_milestone3')
+            timing_milestone4 = request.POST.get('timing_milestone4')
+            main_target = request.POST.get('main_target')
+            boundary_conditions = request.POST.get('boundary_conditions')
+            out_of_scope = request.POST.get('out_of_scope')
+            steering_committee = request.POST.get('steering_committee')
+            facilitator = request.POST.get('facilitator')
+            risk_uncertainties = request.POST.get('risk_uncertainties')
+
+            Projects.objects.create(
+                Project_name=project_name,
+                pm=pm,
+                estimated_budget=estimated_budget,
+                irr=irr,
+                project_status=project_status,
+                project_type=project_type,
+                project_manager=project_manager,
+                project_team=project_team,
+                timing_kickoff=timing_kickoff,
+                timing_closure=timing_closure,
+                timing_milestone1=timing_milestone1,
+                timing_milestone2=timing_milestone2,
+                timing_milestone3=timing_milestone3,
+                timing_milestone4=timing_milestone4,
+                main_target=main_target,
+                boundary_conditions=boundary_conditions,
+                out_of_scope=out_of_scope,
+                steering_committee=steering_committee,
+                facilitator=facilitator,
+                risk_uncertainties=risk_uncertainties
+            )
+
+
+
+    except Exception as e:
+        pass
 
     #user_projects = {'project1':'project info', 'project2':'project info'}
     #return user_projects
+
+    def get_project_all(projectid):
+        project = Projects.objects.get(projectid=projectid)
+        return project
+
+    def get_announcement(project):
+        try:
+            announcement = Announcement.objects.get(projectid=project)
+            return announcement
+        except Announcement.DoesNotExist:
+            return False
+
+    def get_closure(project):
+        try:
+            closure = Closure.objects.get(projectid=project)
+            return closure
+        except Closure.DoesNotExist:
+            return False
+
+
+
+
+
+
 
