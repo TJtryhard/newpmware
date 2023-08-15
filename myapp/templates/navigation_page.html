@@ -9,25 +9,46 @@
     <h1>Navigation Page</h1>
     <a href="http://127.0.0.1:8000/start_new_project/"><button class="start-new-project-button">Start New Project</button></a>
     <a href="http://127.0.0.1:8000/project_site/"><button>Project Site</button></a>
-    <h2>See Existing Project</h2>
+    
+    <!-- Projects Table -->
+    <h2>Projects</h2>
     <table>
         <tr>
-            <th>No.</th>
+            <th>Project ID</th>
             <th>Project Name</th>
             <th>Project Manager</th>
-            <th>Project ID</th>
+            <th>Project Type</th>
             <th>Status</th>
         </tr>
-        <tr><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td></td><td></td></tr>
-        <tr><td></td><td></td><td></td><td></td><td></td></tr>
+        <tbody>
+        <!-- Display Your Project -->
+        {% for project in user_projects %}
+        <tr>
+            <td>{{ project.projectid }}</td>
+            <td>{{ project.project_name }}</td>
+            <td>{{ project.project_manager}}</td>
+            <td>{{ project.project_type }}</td>
+            <td>{{ project.project_status }}</td>
+        </tr>
+        {% endfor %}
+        
+        <!-- Display All Projects -->
+        {% for project in all_projects %}
+        <tr>
+            <td>{{ project.projectid }}</td>
+            <td>{{ project.project_name }}</td>
+            <td>{{ project.project_manager }}</td>
+            <td>{{ project.project_type }}</td>
+            <td>{{ project.project_status }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
     </table>
+
     <h3>Status Description:</h3>
-    <p><span class="status-color" style="background-color:orange;"></span> Project Completed.</p>
-    <p><span class="status-color" style="background-color:green;"></span> Progressing Satisfactorily.</p>
-    <p><span class="status-color" style="background-color:#FFFF66;"></span> Project Marginally at Risk.</p>
-    <p><span class="status-color" style="background-color:red;"></span> Project Significantly at Risk.</p>
-    <p><span class="status-color" style="background-color:black;"></span> Project Cancelled.</p>
+    <p><span class="status-color" style="background-color:green;"></span> Progressing On Time.</p>
+    <p><span class="status-color" style="background-color:yellow;"></span> Minor Deviation.</p>
+    <p><span class="status-color" style="background-color:red;"></span> Out of Plan.</p>
+    <p><span class="status-color" style="background-color:grey;"></span> Not Applicable.</p>
 </body>
 </html>
