@@ -9,7 +9,7 @@
     <h1>Navigation Page</h1>
     <a href="http://127.0.0.1:8000/start_new_project/"><button class="start-new-project-button">Start New Project</button></a>
     <a href="http://127.0.0.1:8000/project_site/"><button>Project Site</button></a>
-    
+
     <!-- Projects Table -->
     <h2>Projects</h2>
     <table>
@@ -22,7 +22,7 @@
         </tr>
         <tbody>
         <!-- Display Your Project -->
-        {% for project in user_projects %}
+        {% for project in projects %}
         <tr>
             <td>{{ project.projectid }}</td>
             <td>{{ project.project_name }}</td>
@@ -31,7 +31,7 @@
             <td>{{ project.project_status }}</td>
         </tr>
         {% endfor %}
-        
+
         <!-- Display All Projects -->
         {% for project in all_projects %}
         <tr>

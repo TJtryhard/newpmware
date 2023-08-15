@@ -32,6 +32,10 @@ def start_page(request):
 
 def navigation_page(request):
     user_projects = get_user_projects('uig27066')
+    print('suc')
+    all_projects = Projects.objects.all()
+    print(all_projects)
+    print(user_projects)
     return render(request, 'navigation_page.html',{'projects':user_projects})
 
 
@@ -145,23 +149,23 @@ def get_user_projects(pm):
 
 
 
-    def get_project_all(projectid):
-        project = Projects.objects.get(projectid=projectid)
-        return project
+def get_project_all(projectid):
+    project = Projects.objects.get(projectid=projectid)
+    return project
 
-    def get_announcement(project):
-        try:
-            announcement = Announcement.objects.get(projectid=project)
-            return announcement
-        except Announcement.DoesNotExist:
-            return False
+def get_announcement(project):
+    try:
+        announcement = Announcement.objects.get(projectid=project)
+        return announcement
+    except Announcement.DoesNotExist:
+        return False
 
-    def get_closure(project):
-        try:
-            closure = Closure.objects.get(projectid=project)
-            return closure
-        except Closure.DoesNotExist:
-            return False
+def get_closure(project):
+    try:
+        closure = Closure.objects.get(projectid=project)
+        return closure
+    except Closure.DoesNotExist:
+        return False
 
 
 
