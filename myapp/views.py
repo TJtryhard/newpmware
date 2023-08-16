@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.contrib.sessions.models import Session
 import requests
 import json
 from .models import Users, Projects, Announcement, KickOff, Milestones, Closure
@@ -15,6 +16,9 @@ def start_page(request):
         #print(result.pm)
 
         if result:
+            request.session['pm']=result.pm
+            print(request.session.get('pm'))
+            request.session.modified = True
             return redirect('navigation_page') # 跳转到导航页面
         else:
             message = "Invalid user!" # 如果用户名或密码错误，添加一个消息
@@ -32,6 +36,7 @@ def start_page(request):
 
 def navigation_page(request):
     user_projects = get_user_projects('uig27066')
+    print(request.session.get('pm'))
     print('suc')
     all_projects = Projects.objects.all()
     print(all_projects)
@@ -198,10 +203,15 @@ def submit_new_project(request):
         out_of_scope = ' '.join([request.POST.get(f'out-of-scope_input_{i}', '') for i in range(1, 5)])
         risk_uncertainties = ' '.join([request.POST.get(f'risk-and-uncertainties_input_{i}', '') for i in range(1, 5)])
 
+        pm = request.session.get('pm')
+        print(pm)
+        pm = Users.objects.get(pm=pm)
+
 
 
         # 保存项目数据到数据库
         project = Projects(
+            pm=Users.objects.get(pm=pm),
             project_name=project_name,
             projectid=projectid,
             estimated_budget=estimated_budget,
@@ -258,3 +268,4 @@ def check_submitted_data(request):
     else:
         # 如果session中没有数据，重定向到start_new_project页面
         return redirect('start_new_project_page')
+
