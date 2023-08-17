@@ -1,9 +1,12 @@
+import datetime
+
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
 import requests
 import json
 from .models import Users, Projects, Announcement, KickOff, Milestones, Closure
+from django.contrib.sessions.models import Session
 ###################### Login Page 登录页面
 
 
@@ -15,7 +18,9 @@ def start_page(request):
         #print(result.pm)
 
         if result:
-            return redirect('navigation_page') # 跳转到导航页面
+            response = redirect('navigation_page')
+            response.set_cookie('pm',result.pm,expires=datetime.datetime.now()+datetime.timedelta(days=1),path='')
+            return response # 跳转到导航页面
         else:
             message = "Invalid user!" # 如果用户名或密码错误，添加一个消息
     else:
@@ -114,6 +119,8 @@ def sign_in(username):
     if code == 200:
         try:
             instance = Users.objects.get(pm=username)
+            response = HttpResponse()
+            response.set_cookie('pm', username)
             return instance
         except Users.DoesNotExist:
             string = data['data']
@@ -124,10 +131,15 @@ def sign_in(username):
             department = attribute['department'][0]
             info = {'pm': username, 'name': name, 'email': email, 'department': department}
             instance = add_user(info)
+            set_cookie_pm(username)
             return instance
     else:
         return False
 
+def set_cookie_pm(username):
+    response = HttpResponse()
+    response.set_cookie('pm', username)
+    return response
 
 def add_user(info):
     name = info['name']
@@ -183,6 +195,9 @@ def submit_new_project(request):
         project_manager = request.POST.get('project_manager')
         project_type = request.POST.get('project_type')
 
+        pm = request.COOKIES.get('pm')
+        pm = Users.objects.get(pm=pm)
+
         # 获取项目的开始和结束日期
         timing_kickoff = request.POST.get('timing_kickoff')
         timing_closure = request.POST.get('timing_closure')
@@ -203,6 +218,7 @@ def submit_new_project(request):
         # 保存项目数据到数据库
         project = Projects(
             project_name=project_name,
+            pm=pm,
             projectid=projectid,
             estimated_budget=estimated_budget,
             irr=irr,
