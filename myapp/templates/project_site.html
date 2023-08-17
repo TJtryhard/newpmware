@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Project Site</title>
     <link rel="stylesheet" href="/static/css/project_site_style.css">
-
     <script>
-        
         function enableEdit(sectionID) {
             let section = document.getElementById(sectionID);
             let cells = section.querySelectorAll('td:not(.non-editable)');
@@ -16,64 +14,105 @@
                 cell.innerHTML = '<input type="text" value="' + text + '"/>';
             }
         }
-    
+
         function saveEdit(sectionID) {
-    let section = document.getElementById(sectionID);
-    let cells = section.querySelectorAll('td:not(.non-editable)');
-    for (let cell of cells) {
-        let input = cell.querySelector('input');
-        cell.innerHTML = input.value;
-        
-        // 这部分是新增的，用于将数据保存到 localStorage
-        let cellKey = sectionID + "-" + cell.cellIndex + "-" + cell.parentElement.rowIndex;
-        localStorage.setItem(cellKey, input.value);
-    }
-}
-function loadDataFromLocalStorage() {
-    let sections = ['general-information', 'section-a', 'section-b', 'section-c', 'section-d'];
-    for (let sectionID of sections) {
-        let section = document.getElementById(sectionID);
-        let cells = section.querySelectorAll('td:not(.non-editable)');
-        for (let cell of cells) {
-            let cellKey = sectionID + "-" + cell.cellIndex + "-" + cell.parentElement.rowIndex;
-            let savedData = localStorage.getItem(cellKey);
-            if (savedData) {
-                cell.innerHTML = savedData;
+            let section = document.getElementById(sectionID);
+            let cells = section.querySelectorAll('td:not(.non-editable)');
+            for (let cell of cells) {
+                let input = cell.querySelector('input');
+                cell.innerHTML = input.value;
+
+                let cellKey = sectionID + "-" + cell.cellIndex + "-" + cell.parentElement.rowIndex;
+                localStorage.setItem(cellKey, input.value);
             }
         }
-    }
-}
 
+        function loadDataFromLocalStorage() {
+            let sections = ['general-information'];
+            for (let sectionID of sections) {
+                let section = document.getElementById(sectionID);
+                let cells = section.querySelectorAll('td:not(.non-editable)');
+                for (let cell of cells) {
+                    let cellKey = sectionID + "-" + cell.cellIndex + "-" + cell.parentElement.rowIndex;
+                    let savedData = localStorage.getItem(cellKey);
+                    if (savedData) {
+                        cell.innerHTML = savedData;
+                    }
+                }
+            }
+        }
     </script>
 </head>
 
-<body>
-    <body onload="loadDataFromLocalStorage()">
-
+<body onload="loadDataFromLocalStorage()">
     <a href="http://127.0.0.1:8000/navigation/">
         <img id="logo-button" src="/static/images/Continental Logo.png" alt="Logo" />
     </a>
 
     <h1>Project Site</h1>
-    
-   <!-- General Information Section -->
+
+<!-- General Information Section -->
 <h2>General Information</h2>
+
 <div id="general-information">
     <table>
-        <tr><td class="non-editable">Project Name</td><td></td><td class="non-editable">Project Manager</td><td></td></tr>
-        <tr><td class="non-editable">Estimated Budget</td><td></td><td class="non-editable">IRR (Internal Rate of Return)</td><td></td></tr> 
-        <tr><td class="non-editable">SPA or PLP</td><td></td><td class="non-editable">Project Team</td><td></td></tr>
-        <tr><td class="non-editable">Kick Off Date</td><td></td><td class="non-editable">Closure Date</td><td></td></tr>
-        <tr><td class="non-editable">Milestone 1 Date</td><td></td><td class="non-editable">Milestone 2 Date</td><td></td></tr>
-        <tr><td class="non-editable">Milestone 3 Date</td><td></td><td class="non-editable">Milestone 4 Date</td><td></td></tr>
-        <tr><td class="non-editable">Main Target</td><td></td><td class="non-editable">Boundary Conditions</td><td></td></tr>
-        <tr><td class="non-editable">Steering Committee</td><td></td><td class="non-editable">Facilitator</td><td></td></tr>
-        <tr><td class="non-editable">Out of Scope</td><td></td><td class="non-editable">Risks and Uncertainties</td><td></td></tr>
+        <tr>
+            <td class="non-editable">Project Name</td>
+            <td>{{ project.project_name }}</td>
+            <td class="non-editable">Project Manager</td>
+            <td>{{ project.pm.name }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Estimated Budget</td>
+            <td>{{ project.estimated_budget }}</td>
+            <td class="non-editable">IRR (Internal Rate of Return)</td>
+            <td>{{ project.irr }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">SPA or PLP</td>
+            <td>{{ project.project_type }}</td>
+            <td class="non-editable">Project Team</td>
+            <td>{{ project.project_team }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Kick Off Date</td>
+            <td>{{ project.timing_kickoff }}</td>
+            <td class="non-editable">Closure Date</td>
+            <td>{{ project.timing_closure }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Milestone 1 Date</td>
+            <td>{{ project.timing_milestone1 }}</td>
+            <td class="non-editable">Milestone 2 Date</td>
+            <td>{{ project.timing_milestone2 }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Milestone 3 Date</td>
+            <td>{{ project.timing_milestone3 }}</td>
+            <td class="non-editable">Milestone 4 Date</td>
+            <td>{{ project.timing_milestone4 }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Main Target</td>
+            <td>{{ project.main_target }}</td>
+            <td class="non-editable">Boundary Conditions</td>
+            <td>{{ project.boundary_conditions }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Steering Committee</td>
+            <td>{{ project.steering_committee }}</td>
+            <td class="non-editable">Facilitator</td>
+            <td>{{ project.facilitator }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Out of Scope</td>
+            <td>{{ project.out_of_scope }}</td>
+            <td class="non-editable">Risks and Uncertainties</td>
+            <td>{{ project.risk_uncertainties }}</td>
+        </tr>
     </table>
-
     <button class="edit-button" onclick="enableEdit('general-information')">Edit</button>
     <button class="edit-button print-button" onclick="saveEdit('general-information')">Save</button>
-
 </div>
 
 <!-- Announcement Section -->

@@ -84,9 +84,21 @@ def start_new_project(request):
 
 
 
-
+'''
 def project_site(request):#########################See Existing Project Page用户阅读旧项目网页
-    return render(request, 'project_site.html')
+
+    user_projects = get_user_projects('uig27066')
+    print('suc')
+    all_projects = Projects.objects.all()
+    print(all_projects)
+    print(user_projects)
+    return render(request, 'project_site.html',{'projects':user_projects})
+'''
+
+def project_site(request, project_id):
+    project = Projects.objects.get(pk=project_id)
+    return render(request, 'project_site.html', {'project': project})
+
 
 def preview_announcement(request):######################### Announcement Review Page
     return render(request, 'preview_announcement.html', {'title': 'Announcement Review'})
@@ -101,6 +113,7 @@ def preview_closure(request):######################### Closure Review Page
     return render(request, 'preview_closure.html')
 
 
+"""
 def sign_in(username):
 
     url = 'http://10.246.97.75:8011/sso/admin/getinfo'
@@ -112,6 +125,29 @@ def sign_in(username):
 
     code = data['code']
     if code == 200:
+        try:
+            instance = Users.objects.get(pm=username)
+            return instance
+        except Users.DoesNotExist:
+            string = data['data']
+            data = json.loads(string)
+            attribute = data['attributes']
+            name = attribute['displayName'][0]
+            email = attribute['mail'][0]
+            department = attribute['department'][0]
+            info = {'pm': username, 'name': name, 'email': email, 'department': department}
+            instance = add_user(info)
+            return instance
+    else:
+        return False
+
+"""
+
+
+def sign_in(username):
+
+    data = {}
+    if True:
         try:
             instance = Users.objects.get(pm=username)
             return instance
@@ -182,6 +218,7 @@ def submit_new_project(request):
         irr = request.POST.get('irr')
         project_manager = request.POST.get('project_manager')
         project_type = request.POST.get('project_type')
+        facilitator = request.POST.get('facilitator')
 
         # 获取项目的开始和结束日期
         timing_kickoff = request.POST.get('timing_kickoff')
@@ -208,6 +245,7 @@ def submit_new_project(request):
             irr=irr,
             project_manager=project_manager,
             project_type=project_type,
+            facilitator=facilitator,
             timing_kickoff=timing_kickoff,
             timing_closure=timing_closure,
             main_target=main_target,
@@ -229,6 +267,7 @@ def submit_new_project(request):
             'irr': irr,
             'project_manager': project_manager,
             'project_type': project_type,
+            'facilitator': facilitator,
             'timing_kickoff': timing_kickoff,
             'timing_closure': timing_closure,
             'main_target': main_target,
@@ -247,6 +286,7 @@ def submit_new_project(request):
     else:
         return redirect('start_new_project_page')
 
+        #print(project.facilitator)
 
 
 def check_submitted_data(request):
