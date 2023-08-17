@@ -89,9 +89,21 @@ def start_new_project(request):
 
 
 
-
+'''
 def project_site(request):#########################See Existing Project Page用户阅读旧项目网页
-    return render(request, 'project_site.html')
+
+    user_projects = get_user_projects('uig27066')
+    print('suc')
+    all_projects = Projects.objects.all()
+    print(all_projects)
+    print(user_projects)
+    return render(request, 'project_site.html',{'projects':user_projects})
+'''
+
+def project_site(request, project_id):
+    project = Projects.objects.get(pk=project_id)
+    return render(request, 'project_site.html', {'project': project})
+
 
 def preview_announcement(request):######################### Announcement Review Page
     return render(request, 'preview_announcement.html', {'title': 'Announcement Review'})
@@ -131,15 +143,16 @@ def sign_in(username):
             department = attribute['department'][0]
             info = {'pm': username, 'name': name, 'email': email, 'department': department}
             instance = add_user(info)
-            set_cookie_pm(username)
+            #set_cookie_pm(username)
             return instance
     else:
         return False
-
+'''
 def set_cookie_pm(username):
     response = HttpResponse()
     response.set_cookie('pm', username)
     return response
+'''
 
 def add_user(info):
     name = info['name']
@@ -194,6 +207,7 @@ def submit_new_project(request):
         irr = request.POST.get('irr')
         project_manager = request.POST.get('project_manager')
         project_type = request.POST.get('project_type')
+        facilitator = request.POST.get('facilitator')
 
         pm = request.COOKIES.get('pm')
         pm = Users.objects.get(pm=pm)
@@ -224,6 +238,7 @@ def submit_new_project(request):
             irr=irr,
             project_manager=project_manager,
             project_type=project_type,
+            facilitator=facilitator,
             timing_kickoff=timing_kickoff,
             timing_closure=timing_closure,
             main_target=main_target,
@@ -245,6 +260,7 @@ def submit_new_project(request):
             'irr': irr,
             'project_manager': project_manager,
             'project_type': project_type,
+            'facilitator': facilitator,
             'timing_kickoff': timing_kickoff,
             'timing_closure': timing_closure,
             'main_target': main_target,

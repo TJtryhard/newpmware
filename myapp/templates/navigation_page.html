@@ -8,7 +8,6 @@
 <body>
     <h1>Navigation Page</h1>
     <a href="http://localhost:8000/start_new_project/"><button class="start-new-project-button">Start New Project</button></a>
-    <a href="http://localhost:8000/project_site/"><button>Project Site</button></a>
 
     <!-- Projects Table -->
     <h2>Projects</h2>
@@ -25,23 +24,14 @@
         {% for project in projects %}
         <tr>
             <td>{{ project.projectid }}</td>
-            <td>{{ project.project_name }}</td>
+            <!-- Updated line below to make project name a clickable link -->
+            <td><a href="{% url 'project_site' project.projectid %}">{{ project.project_name }}</a></td>
             <td>{{ project.project_manager}}</td>
             <td>{{ project.project_type }}</td>
             <td>{{ project.project_status }}</td>
         </tr>
         {% endfor %}
 
-        <!-- Display All Projects -->
-        {% for project in all_projects %}
-        <tr>
-            <td>{{ project.projectid }}</td>
-            <td>{{ project.project_name }}</td>
-            <td>{{ project.project_manager }}</td>
-            <td>{{ project.project_type }}</td>
-            <td>{{ project.project_status }}</td>
-        </tr>
-        {% endfor %}
         </tbody>
     </table>
 
