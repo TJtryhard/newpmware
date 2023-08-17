@@ -4,39 +4,60 @@ from django.shortcuts import render
 import requests
 import json
 from .models import Users, Projects, Announcement, KickOff, Milestones, Closure
-###################### Login Page 登录页面
 
+###################### Login Page 登录页面
+from django.shortcuts import render, redirect
+from .models import Users
 
 def start_page(request):
+    message = ""
     if request.method == "POST":
         username = request.POST.get('username')
-        #password = request.POST.get('password')
-        result = sign_in(username)
-        #print(result.pm)
+
+        result = sign_in(username, request)  # 传递request到sign_in函数中
 
         if result:
-            return redirect('navigation_page') # 跳转到导航页面
+            # 检查session中的数据
+            user_data = request.session.get('user_data')
+            if user_data:
+                message = "数据已保存到session中: " + str(user_data)
+            else:
+                message = "数据未保存到session中!"
+
+            return redirect('navigation_page')  # 跳转到导航页面
         else:
-            message = "Invalid user!" # 如果用户名或密码错误，添加一个消息
-    else:
-        message = ""
-    
+            message = "无效的用户!"  # 如果用户名或密码错误，添加一个消息
+
     context = {
         "message": message
     }
     return render(request, 'login.html', context)
 
 
-
 ###################### Navigation Page 导航页面
 
 def navigation_page(request):
-    user_projects = get_user_projects('uig27066')
-    print('suc')
+    # 从session中获取用户数据
+    user_data = request.session.get('user_data', {})
+
+    # 如果在session中有用户数据且包含'pm'键，则使用该用户的pm来获取他们的项目，否则使用默认值'uig27066'
+    user_pm = user_data.get('pm', 'uig27066')
+
+    user_projects = get_user_projects(user_pm)
     all_projects = Projects.objects.all()
-    print(all_projects)
-    print(user_projects)
-    return render(request, 'navigation_page.html',{'projects':user_projects})
+
+    context = {
+        'projects': user_projects,
+        'all_projects': all_projects,
+        'user_data': user_data  # 将user_data加入到context中，使其在模板中可用
+    }
+
+    return render(request, 'navigation_page.html', context)
+
+def get_user_projects(pm_value):
+    # 根据pm_value从数据库中筛选项目
+    return Projects.objects.filter(project_manager=pm_value)
+
 
 
 ###################### Start New Project 用户创建新项目网页
@@ -53,6 +74,9 @@ def start_new_project(request):
         "Milestone 4 Time": "timing_milestone4"
     }
 
+    # 从 session 中检查用户信息
+    user_data = request.session.get('user_data', None)
+
     context = {
         "attributes_before_project_type": [
             "Project Name",
@@ -64,10 +88,7 @@ def start_new_project(request):
         "managers": ["Apple", "Banana", "Cherry", "Durian", "Elderberry", "Fig", "Grape"],
         "facilitators": ["Jing Yang", "Lisa Shi", "Runkun Wang"],
         "steering_committee": ["Jeff Wang", "Yuan Zhou", "Yi Sun", "Brian Yang", "Li Yan", "Tony Huang", "Sam Guo", "Rowena Tao","Covey Wang", "Hairui Liu", "Bingyan Wang", "Abhishek Kumar"],
-        
-        # 使用映射中的模型字段名称
         "date_attributes": list(date_attributes_mapping.values()),
-
         "attributes_after_project_type_and_dates": [
             "Main Target",
             "Boundary Conditions",
@@ -76,12 +97,11 @@ def start_new_project(request):
             "Facilitator",
             "Risk and Uncertainties"
         ],
-        # 保留映射，以备在模板中显示友好的名称
-        "date_attributes_mapping": date_attributes_mapping
+        "date_attributes_mapping": date_attributes_mapping,
+        "user_data": user_data  # 将 user_data 添加到 context 中
     }
 
     return render(request, 'start_new_project.html', context)
-
 
 
 
@@ -101,32 +121,43 @@ def preview_closure(request):######################### Closure Review Page
     return render(request, 'preview_closure.html')
 
 
-def sign_in(username):
+from django.shortcuts import render, redirect
+from .models import Users
+import json
 
-    url = 'http://10.246.97.75:8011/sso/admin/getinfo'
-    data = {
-        'username': username
-    }
-    response = requests.post(url, data=data)
-    data = response.json()
+def sign_in(username, request):
+    try:
+        instance = Users.objects.get(pm=username)
 
-    code = data['code']
-    if code == 200:
-        try:
-            instance = Users.objects.get(pm=username)
-            return instance
-        except Users.DoesNotExist:
-            string = data['data']
-            data = json.loads(string)
-            attribute = data['attributes']
-            name = attribute['displayName'][0]
-            email = attribute['mail'][0]
-            department = attribute['department'][0]
-            info = {'pm': username, 'name': name, 'email': email, 'department': department}
-            instance = add_user(info)
-            return instance
-    else:
-        return False
+        # 将用户信息存储到session中
+        request.session['user_data'] = {
+            'name': instance.name,
+            'email': instance.eml,
+            'department': instance.dept
+        }
+        return instance
+
+    except Users.DoesNotExist:
+        # 如果用户不存在，这里需要从其他数据源获取用户数据（这部分代码未给出）
+        # 假设从其他数据源获取的数据放在了data字典中
+        string = data.get('data', '{}')
+        data = json.loads(string)
+        attribute = data.get('attributes', {})
+        name = attribute.get('displayName', [''])[0]
+        email = attribute.get('mail', [''])[0]
+        department = attribute.get('department', [''])[0]
+        
+        info = {'pm': username, 'name': name, 'email': email, 'department': department}
+        instance = add_user(info)
+        
+        # 也将新用户信息存储到session中
+        request.session['user_data'] = {
+            'name': name,
+            'email': email,
+            'department': department
+        }
+        return instance
+
 
 
 def add_user(info):
@@ -168,93 +199,74 @@ def get_closure(project):
         return False
 
 
-
-
-
-
-
 def submit_new_project(request):
     if request.method == 'POST':
-        # 从POST请求中获取数据
-        project_name = request.POST.get('project_name')
-        projectid = request.POST.get('project_id')  # 调整了变量名以匹配模型
-        estimated_budget = request.POST.get('estimated_budget')
-        irr = request.POST.get('irr')
-        project_manager = request.POST.get('project_manager')
-        project_type = request.POST.get('project_type')
-
-        # 获取项目的开始和结束日期
-        timing_kickoff = request.POST.get('timing_kickoff')
-        timing_closure = request.POST.get('timing_closure')
-        timing_milestone1 = request.POST.get('timing_milestone1')
-        timing_milestone2 = request.POST.get('timing_milestone2')
-        timing_milestone3 = request.POST.get('timing_milestone3')
-        timing_milestone4 = request.POST.get('timing_milestone4')
-
-
-        # 从动态添加的字段中提取数据
-        main_target = ' '.join([request.POST.get(f'main-target_input_{i}', '') for i in range(1, 5)])
-        boundary_conditions = ' '.join([request.POST.get(f'boundary-conditions_input_{i}', '') for i in range(1, 5)])
-        out_of_scope = ' '.join([request.POST.get(f'out-of-scope_input_{i}', '') for i in range(1, 5)])
-        risk_uncertainties = ' '.join([request.POST.get(f'risk-and-uncertainties_input_{i}', '') for i in range(1, 5)])
-
-
-
-        # 保存项目数据到数据库
-        project = Projects(
-            project_name=project_name,
-            projectid=projectid,
-            estimated_budget=estimated_budget,
-            irr=irr,
-            project_manager=project_manager,
-            project_type=project_type,
-            timing_kickoff=timing_kickoff,
-            timing_closure=timing_closure,
-            main_target=main_target,
-            boundary_conditions=boundary_conditions,
-            out_of_scope=out_of_scope,
-            risk_uncertainties=risk_uncertainties,
-            timing_milestone1=timing_milestone1,
-            timing_milestone2=timing_milestone2,
-            timing_milestone3=timing_milestone3,
-            timing_milestone4=timing_milestone4,
-        )
-        project.save()
-
-        # 保存数据到session中，供check_submitted_data视图使用
-        request.session['submitted_data'] = {
-            'project_name': project_name,
-            'projectid': projectid,
-            'estimated_budget': estimated_budget,
-            'irr': irr,
-            'project_manager': project_manager,
-            'project_type': project_type,
-            'timing_kickoff': timing_kickoff,
-            'timing_closure': timing_closure,
-            'main_target': main_target,
-            'boundary_conditions': boundary_conditions,
-            'out_of_scope': out_of_scope,
-            'risk_uncertainties': risk_uncertainties,
-            'timing_milestone1': timing_milestone1,
-            'timing_milestone2': timing_milestone2,
-            'timing_milestone3': timing_milestone3,
-            'timing_milestone4': timing_milestone4,
+        # 从POST请求中获取数据，但不获取project_manager字段，因为我们将从session中获取PM数据。
+        data = {
+            'project_name': request.POST.get('project_name'),
+            'estimated_budget': request.POST.get('estimated_budget'),
+            'irr': request.POST.get('irr'),
+            'project_type': request.POST.get('project_type'),
+            'timing_kickoff': request.POST.get('timing_kickoff'),
+            'timing_closure': request.POST.get('timing_closure'),
+            'timing_milestone1': request.POST.get('timing_milestone1'),
+            'timing_milestone2': request.POST.get('timing_milestone2'),
+            'timing_milestone3': request.POST.get('timing_milestone3'),
+            'timing_milestone4': request.POST.get('timing_milestone4'),
+            'main_target': ' '.join([request.POST.get(f'main-target_input_{i}', '') for i in range(1, 5)]),
+            'boundary_conditions': ' '.join([request.POST.get(f'boundary-conditions_input_{i}', '') for i in range(1, 5)]),
+            'out_of_scope': ' '.join([request.POST.get(f'out-of-scope_input_{i}', '') for i in range(1, 5)]),
+            'risk_uncertainties': ' '.join([request.POST.get(f'risk-and-uncertainties_input_{i}', '') for i in range(1, 5)])
         }
 
-        # 重定向到check_submitted_data视图
-        return redirect('check_data')
+        # 从session中获取PM数据
+        pm_data = request.session.get('user_data')
+        if not pm_data:
+            # 如果session中没有PM数据，可能是因为用户没有登录或者其他原因。这时应该处理这种情况。
+            # 例如，重定向到登录页面或显示错误消息。
+            return redirect('login_page')  # 假设有一个名为login_page的视图。
+
+        pm_username = pm_data.get('name')  # 根据您的数据结构从session中获取PM的用户名。
+        try:
+            pm_instance = Users.objects.get(name=pm_username)  # 根据用户名获取Users对象
+        except Users.DoesNotExist:
+            # 如果找不到对应的用户，也应该处理这种情况。
+            return redirect('error_page')  # 假设有一个名为error_page的视图。
+
+        # 将项目与当前登录的PM关联
+        data['pm'] = pm_instance
+
+        # 保存项目数据到数据库
+        project = Projects(**data)
+        project.save()
+
+        # 重定向到navigation_page视图
+        return redirect('navigation_page')
 
     else:
         return redirect('start_new_project_page')
+
 
 
 
 def check_submitted_data(request):
+    # 检查是否在session中有提交的数据
     if 'submitted_data' in request.session:
-        # 从session中获取数据
-        data = request.session['submitted_data']
+        # 从session中获取数据，并明确命名为session_data
+        session_data = request.session['submitted_data']
         # 渲染数据到模板
-        return render(request, 'check_data.html', {'data': data})
+        return render(request, 'check_data.html', {'data': session_data})
     else:
         # 如果session中没有数据，重定向到start_new_project页面
-        return redirect('start_new_project_page')
+        return redirect('navigation_page')
+
+from django.http import JsonResponse
+
+
+
+def check_session_data(request):
+    user_data = request.session.get('user_data', None)
+    if user_data:
+        return JsonResponse(user_data)
+    else:
+        return JsonResponse({"message": "没有在session中找到用户数据"})

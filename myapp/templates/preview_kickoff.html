@@ -4,11 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/static/css/preview_kickoff_style.css">
-    <title>Kick off Review</title>
+    <title>Kick-off Review</title>
 </head>
 
 <body>
-    <h1 class="title">Kick off Review</h1>
+    <h1 class="title">Kick-off Review</h1>
     <table>
         <tr>
             <th class="bold" colspan="2">Project Name:</th>
@@ -51,23 +51,48 @@
             <td class="no-background extra-height" colspan="3">Potential Risk & Uncertainties:</td>
         </tr>
         <tr>
-            <th class="bold general-info" rowspan="2">Sub-target & Success Criteria:</th>
-            <td class="equal-width">Sub-target:</td>
-            <td class="equal-width" colspan="2">Success Criteria:</td>
+            <th class="bold general-info" rowspan="2">Sub-target & Success Criteria</th>
+            <td class="equal-width">Sub-target</td>
+            <td class="equal-width" colspan="2">Success Criteria</td>
         </tr>
         <tr>
             <td class="extra-height"></td>
             <td class="extra-height" colspan="2"></td>
         </tr>
     </table>
+
     <div class="button-container">
         <a href="http://127.0.0.1:8000/project_site/" class="button">
             Return
         </a>
-        <div class="button">
-            Download PDF
-        </div>
+        <button onclick="saveTableAsImage()" class="button">Save as Image</button>
     </div>
-</body>
 
+    <!-- Include the html2canvas library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+
+    <script>
+    function saveTableAsImage() {
+    var scale = 2; // Increase as needed
+
+    // Temporarily hide the button container
+    var buttonContainer = document.querySelector('.button-container');
+    buttonContainer.style.display = 'none';
+
+    // Capture the whole body including the title and table
+    html2canvas(document.body, {
+        scale: scale,
+        onrendered: function(canvas) {
+            var a = document.createElement('a');
+            a.href = canvas.toDataURL("image/png");
+            a.download = 'content-image.png';
+            a.click();
+
+            // Restore the button container
+            buttonContainer.style.display = 'flex';
+        }
+    });
+}
+    </script>
+</body>
 </html>

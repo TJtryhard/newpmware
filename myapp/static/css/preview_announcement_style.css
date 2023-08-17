@@ -4,7 +4,7 @@
 }
 
 body {
-    margin: 10px;
+    margin: 8px;
     background-color: #FFFFFF;
 }
 
@@ -17,7 +17,7 @@ table {
 
 td,
 th {
-    border: 1px solid black;
+    border: 2px solid black;
     text-align: left;
     padding: 8px;
     font-family: 'Arial', sans-serif;

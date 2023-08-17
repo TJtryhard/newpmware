@@ -15,6 +15,14 @@
         <h1>New Project Table (General Information)</h1>
     </div>
 
+    {% if user_data %}
+    <div class="user-info">
+        <h3>Welcome, {{ user_data.name }}!</h3>
+        <!-- 在此处显示其他用户信息，如邮箱、部门等 -->
+    </div>
+    {% endif %}
+
+
     <!----<p>
     <form action="{% url 'submit_new_project' %}" method="post">
     <form action="{% url 'check_data' %}" method="post"></form>
