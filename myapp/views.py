@@ -19,7 +19,7 @@ def start_page(request):
 
         if result:
             response = redirect('navigation_page')
-            response.set_cookie('pm',result.pm,expires=datetime.datetime.now()+datetime.timedelta(days=1),path='')
+            response.set_cookie('pm',result.pm,expires=datetime.datetime.now()+datetime.timedelta(days=1),path='/')
             return response # 跳转到导航页面
         else:
             message = "Invalid user!" # 如果用户名或密码错误，添加一个消息
@@ -222,7 +222,7 @@ def submit_new_project(request):
 
 
         # 从动态添加的字段中提取数据
-        main_target = ' '.join([request.POST.get(f'main-target_input_{i}', '') for i in range(1, 5)])
+        main_target = '$$'.join([request.POST.get(f'main-target_input_{i}', '') for i in range(1, 5)])
         boundary_conditions = ' '.join([request.POST.get(f'boundary-conditions_input_{i}', '') for i in range(1, 5)])
         out_of_scope = ' '.join([request.POST.get(f'out-of-scope_input_{i}', '') for i in range(1, 5)])
         risk_uncertainties = ' '.join([request.POST.get(f'risk-and-uncertainties_input_{i}', '') for i in range(1, 5)])
@@ -290,3 +290,50 @@ def check_submitted_data(request):
     else:
         # 如果session中没有数据，重定向到start_new_project页面
         return redirect('start_new_project_page')
+
+def update_project(request, projectid):
+    if request.method == 'POST':
+        # 从POST请求中获取数据
+        project_name = request.POST.get('project_name')
+        estimated_budget = request.POST.get('estimated_budget')
+        irr = request.POST.get('irr')
+        project_manager = request.POST.get('project_manager')
+        project_type = request.POST.get('project_type')
+        facilitator = request.POST.get('facilitator')
+
+        # 获取项目的开始和结束日期
+        timing_kickoff = request.POST.get('timing_kickoff')
+        timing_closure = request.POST.get('timing_closure')
+        timing_milestone1 = request.POST.get('timing_milestone1')
+        timing_milestone2 = request.POST.get('timing_milestone2')
+        timing_milestone3 = request.POST.get('timing_milestone3')
+        timing_milestone4 = request.POST.get('timing_milestone4')
+
+        # 从动态添加的字段中提取数据
+        main_target = '$$'.join([request.POST.get(f'main-target_input_{i}', '') for i in range(1, 5)])
+        boundary_conditions = ' '.join([request.POST.get(f'boundary-conditions_input_{i}', '') for i in range(1, 5)])
+        out_of_scope = ' '.join([request.POST.get(f'out-of-scope_input_{i}', '') for i in range(1, 5)])
+        risk_uncertainties = ' '.join([request.POST.get(f'risk-and-uncertainties_input_{i}', '') for i in range(1, 5)])
+
+        project = Projects.objects.get(projectid=projectid)
+        project.project_name=project_name
+        project.project_manager=project_manager
+        project.project_type=project_type
+        project.estimated_budget=estimated_budget
+        project.irr=irr
+        project.facilitator=facilitator
+
+        project.timing_closure=timing_closure
+        project.timing_kickoff=timing_kickoff
+        project.timing_milestone1=timing_milestone1
+        project.timing_milestone2=timing_milestone2
+        project.timing_milestone3=timing_milestone3
+        project.timing_milestone4=timing_milestone4
+
+        project.main_target=main_target
+        project.boundary_conditions=boundary_conditions
+        project.out_of_scope=out_of_scope
+        project.risk_uncertainties=risk_uncertainties
+
+        project.save()
+        return render(request, 'project_site.html', {'project': project})
