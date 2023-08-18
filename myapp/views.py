@@ -1,5 +1,5 @@
 import datetime
-
+from django.db import IntegrityError
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.shortcuts import render
@@ -7,6 +7,7 @@ import requests
 import json
 from .models import Users, Projects, Announcement, KickOff, Milestones, Closure
 from django.contrib.sessions.models import Session
+from django.core.exceptions import ValidationError
 ###################### Login Page 登录页面
 
 
@@ -102,7 +103,16 @@ def project_site(request):#########################See Existing Project Page用�
 
 def project_site(request, project_id):
     project = Projects.objects.get(pk=project_id)
-    return render(request, 'project_site.html', {'project': project})
+    if request.POST.get('success') == 'true':
+        success_message = 'Update successful'
+    else:
+        success_message = 'Update fail'
+
+    context = {
+        'project': project,
+        'success_message': success_message
+    }
+    return render(request, 'project_site.html', context)
 
 
 def preview_announcement(request):######################### Announcement Review Page
@@ -291,6 +301,7 @@ def check_submitted_data(request):
         # 如果session中没有数据，重定向到start_new_project页面
         return redirect('start_new_project_page')
 
+
 def update_project(request, projectid):
     if request.method == 'POST':
         # 从POST请求中获取数据
@@ -337,3 +348,54 @@ def update_project(request, projectid):
 
         project.save()
         return render(request, 'project_site.html', {'project': project})
+
+    def edit_announcement(request, projectid):
+        if request.method == 'POST':
+            init_situation1=request.POST.get('initial_situation1')
+            init_situation2=request.POST.get('initial_situation2')
+            init_situation3=request.POST.get('initial_situation3')
+            init_situation4=request.POST.get('initial_situation4')
+
+
+            try:
+                project = Projects.objects.get(projectid=projectid)
+                announcement = Announcement.objects.get(projectid=project)
+                announcement.init_situation1=init_situation1
+                announcement.init_situation2=init_situation2
+                announcement.init_situation3=init_situation3
+                announcement.init_situation4=init_situation4
+            except Announcement.DoesNotExist:
+                pass
+
+
+
+def edit_project(request):
+    data = json.loads(request.body.decode('utf-8'))
+    try:
+        projectid = data.get('projectid')
+        project = Projects.objects.get(projectid=projectid)
+
+        project.project_name = data.get('general-information-1-0')
+        project.estimated_budget = data.get('general-information-1-1')
+        project.irr = data.get('general-information-3-1')
+        project.project_manager = data.get('general-information-3-0')
+        project.project_type = data.get('general-information-1-2')
+        project.facilitator = data.get('general-information-1-7')
+
+        project.timing_kickoff = data.get('general-information-1-3')
+        project.timing_closure = data.get('general-information-3-3')
+        project.timing_milestone1 = data.get('general-information-1-4')
+        project.timing_milestone2 = data.get('general-information-3-4')
+        project.timing_milestone3 = data.get('general-information-1-5')
+        project.timing_milestone4 = data.get('general-information-3-5')
+
+        project.main_target = data.get('general-information-1-6')
+        project.boundary_conditions = data.get('general-information-3-6')
+        project.out_of_scope = data.get('general-information-1-8')
+        project.risk_uncertainties = data.get('general-information-3-8')
+
+        project.save()
+
+        return JsonResponse({'success':True})
+    except ValidationError:
+        return JsonResponse({'success':False})

@@ -41,6 +41,56 @@
                 }
             }
         }
+
+        function saveAndSubmit(sectionID) {
+            const urlParts = window.location.href.split('/');
+            const projectid = urlParts[urlParts.length - 2];
+            let section = document.getElementById((sectionID));
+            let cells = section.querySelectorAll('td:not(.non-editable)');
+
+            let data = {projectid: projectid};
+            for (let cell of cells) {
+                let input = cell.querySelector('input');
+                let cellKey = sectionID + '-'+cell.cellIndex+'-'+cell.parentElement.rowIndex;
+                let cellValue = input.value;
+                data[cellKey] = cellValue;
+            }
+
+            sendPostRequest(data);
+        }
+
+        function sendPostRequest(data) {
+            fetch('http://127.0.0.1:8000/edit_project/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok){
+                    console.log('Successful');
+                } else {
+                    console.log('fail')
+                }
+                console.log('data', JSON.stringify(data))
+            }).catch(error=>{console.error('POST WENT WRONG', error)});
+        }
+
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie!=='') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length+1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
     </script>
 </head>
 
@@ -76,21 +126,21 @@
         </tr>
         <tr>
             <td class="non-editable">Kick Off Date</td>
-            <td>{{ project.timing_kickoff }}</td>
+            <td>{{ project.timing_kickoff|date:'Y-m-d' }}</td>
             <td class="non-editable">Closure Date</td>
-            <td>{{ project.timing_closure }}</td>
+            <td>{{ project.timing_closure|date:'Y-m-d' }}</td>
         </tr>
         <tr>
             <td class="non-editable">Milestone 1 Date</td>
-            <td>{{ project.timing_milestone1 }}</td>
+            <td>{{ project.timing_milestone1|date:'Y-m-d' }}</td>
             <td class="non-editable">Milestone 2 Date</td>
-            <td>{{ project.timing_milestone2 }}</td>
+            <td>{{ project.timing_milestone2|date:'Y-m-d' }}</td>
         </tr>
         <tr>
             <td class="non-editable">Milestone 3 Date</td>
-            <td>{{ project.timing_milestone3 }}</td>
+            <td>{{ project.timing_milestone3|date:'Y-m-d' }}</td>
             <td class="non-editable">Milestone 4 Date</td>
-            <td>{{ project.timing_milestone4 }}</td>
+            <td>{{ project.timing_milestone4|date:'Y-m-d' }}</td>
         </tr>
         <tr>
             <td class="non-editable">Main Target</td>
@@ -112,7 +162,7 @@
         </tr>
     </table>
     <button class="edit-button" onclick="enableEdit('general-information')">Edit</button>
-    <button class="edit-button print-button" onclick="saveEdit('general-information')">Save</button>
+    <button class="edit-button print-button" onclick="saveAndSubmit('general-information')">Save</button>
 </div>
 
 <!-- Announcement Section -->
