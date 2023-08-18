@@ -59,8 +59,43 @@
             sendPostRequest(data);
         }
 
+        function saveAndSubmitAnnoucement(sectionID) {
+            const urlParts = window.location.href.split('/');
+            const projectid = urlParts[urlParts.length - 2];
+            let section = document.getElementById((sectionID));
+            let cells = section.querySelectorAll('td:not(.non-editable)');
+
+            let data = {projectid: projectid};
+            for (let cell of cells) {
+                let input = cell.querySelector('input');
+                let cellKey = sectionID + '-'+cell.cellIndex+'-'+cell.parentElement.rowIndex;
+                let cellValue = input.value;
+                data[cellKey] = cellValue;
+            }
+
+            sendPostRequestAnnouncement(data);
+        }
+
         function sendPostRequest(data) {
             fetch('http://127.0.0.1:8000/edit_project/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok){
+                    console.log('Successful');
+                } else {
+                    console.log('fail')
+                }
+                console.log('data', JSON.stringify(data))
+            }).catch(error=>{console.error('POST WENT WRONG', error)});
+        }
+
+        function sendPostRequestAnnouncement(data) {
+            fetch('http://127.0.0.1:8000/edit_announcement/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -175,7 +210,7 @@
         <tr><td class="non-editable">Initial Situation 4</td><td></td><td class="non-editable">General Concept 4</td><td></td></tr>
     </table>
     <button class="edit-button" onclick="enableEdit('section-a')">Edit</button>
-    <button class="edit-button print-button" onclick="saveEdit('section-a')">Save</button>
+    <button class="edit-button print-button" onclick="saveAndSubmitAnnoucement('section-a')">Save</button>
     <a href="http://127.0.0.1:8000/previewannouncement/" target="_blank">
         <button class="edit-button print-button" type="button">Print</button>
     </a>

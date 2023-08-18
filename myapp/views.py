@@ -349,24 +349,38 @@ def update_project(request, projectid):
         project.save()
         return render(request, 'project_site.html', {'project': project})
 
-    def edit_announcement(request, projectid):
-        if request.method == 'POST':
-            init_situation1=request.POST.get('initial_situation1')
-            init_situation2=request.POST.get('initial_situation2')
-            init_situation3=request.POST.get('initial_situation3')
-            init_situation4=request.POST.get('initial_situation4')
 
-
-            try:
-                project = Projects.objects.get(projectid=projectid)
-                announcement = Announcement.objects.get(projectid=project)
-                announcement.init_situation1=init_situation1
-                announcement.init_situation2=init_situation2
-                announcement.init_situation3=init_situation3
-                announcement.init_situation4=init_situation4
-            except Announcement.DoesNotExist:
-                pass
-
+def edit_announcement(request):
+    data = json.loads(request.body.decode('utf-8'))
+    projectid = data.get('projectid')
+    try:
+        project = Projects.objects.get(projectid=projectid)
+        announcement = Announcement.objects.get(projectid=project)
+        announcement.init_situation1 = data.get('section-a-1-0')
+        announcement.init_situation2 = data.get('section-a-1-1')
+        announcement.init_situation3 = data.get('section-a-1-2')
+        announcement.init_situation4 = data.get('section-a-1-3')
+        announcement.gene_concept1 = data.get('section-a-3-0')
+        announcement.gene_concept2 = data.get('section-a-3-1')
+        announcement.gene_concept3 = data.get('section-a-3-2')
+        announcement.gene_concept4 = data.get('section-a-3-3')
+        announcement.save()
+        return JsonResponse({'success': True})
+    except Announcement.DoesNotExist:
+        Announcement.objects.create(
+            projectid = projectid,
+            init_situation1=data.get('section-a-1-0'),
+            init_situation2= data.get('section-a-1-1'),
+            init_situation3=data.get('section-a-1-2'),
+            init_situation4=data.get('section-a-1-3'),
+            gene_concept1=data.get('section-a-3-0'),
+            gene_concept2=data.get('section-a-3-1'),
+            gene_concept3=data.get('section-a-3-2'),
+            gene_concept4=data.get('section-a-3-3')
+        )
+        return JsonResponse({'success': True})
+    except ValidationError:
+        return JsonResponse({'success': False})
 
 
 def edit_project(request):

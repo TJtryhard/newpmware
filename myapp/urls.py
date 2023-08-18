@@ -1,7 +1,7 @@
 from django.urls import path
 from .views import (start_page, navigation_page, start_new_project, project_site, 
                     preview_announcement, kickoff_review, preview_milestone, preview_closure, 
-                    submit_new_project, check_submitted_data, edit_project)  # Ensure submit_new_project is imported
+                    submit_new_project, check_submitted_data, edit_project,edit_announcement)  # Ensure submit_new_project is imported
 
 urlpatterns = [
     path('login/', start_page, name='login_page'),
@@ -14,5 +14,6 @@ urlpatterns = [
     path('preview_milestone/', preview_milestone, name='preview_milestone'),
     path('preview_closure/', preview_closure, name='preview_closure'),
     path('check_data/', check_submitted_data, name='check_data'),
-    path('edit_project/', edit_project, name='edit_project')
+    path('edit_project/', edit_project, name='edit_project'),
+    path('edit_announcement',edit_announcement, name='edit_announcement')
 ]
