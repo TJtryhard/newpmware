@@ -367,8 +367,9 @@ def edit_announcement(request):
         announcement.save()
         return JsonResponse({'success': True})
     except Announcement.DoesNotExist:
+        project = Projects.objects.get(projectid=projectid)
         Announcement.objects.create(
-            projectid = projectid,
+            projectid = project,
             init_situation1=data.get('section-a-1-0'),
             init_situation2= data.get('section-a-1-1'),
             init_situation3=data.get('section-a-1-2'),

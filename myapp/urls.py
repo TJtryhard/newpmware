@@ -15,5 +15,5 @@ urlpatterns = [
     path('preview_closure/', preview_closure, name='preview_closure'),
     path('check_data/', check_submitted_data, name='check_data'),
     path('edit_project/', edit_project, name='edit_project'),
-    path('edit_announcement',edit_announcement, name='edit_announcement')
+    path('edit_announcement/',edit_announcement, name='edit_announcement')
 ]
