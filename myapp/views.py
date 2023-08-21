@@ -100,7 +100,8 @@ def project_site(request, project_id):
     context = {
         'project': project,
         'success_message': success_message,
-        'project_id':project_id
+        'project_id':project_id,
+        'announcement': Announcement.objects.get(projectid=project),
     }
     return render(request, 'project_site.html', context)
 
@@ -164,7 +165,6 @@ def preview_closure(request, project_id):
     }
     return render(request, 'preview_closure.html', context)
 
-'''
 
 def sign_in(username):
 
@@ -195,9 +195,10 @@ def sign_in(username):
             return instance
     else:
         return False
+
+
+
 '''
-
-
 def sign_in(username, request):
     try:
         instance = Users.objects.get(pm=username)
@@ -230,7 +231,7 @@ def sign_in(username, request):
             'department': department
         }
         return instance
-
+'''
 
 def set_cookie_pm(username):
     response = HttpResponse()

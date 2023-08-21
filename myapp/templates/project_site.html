@@ -204,10 +204,30 @@
 <h2>Announcement</h2>
 <div id="section-a">
     <table>
-        <tr><td class="non-editable">Initial Situation 1</td><td></td><td class="non-editable">General Concept 1</td><td></td></tr>
-        <tr><td class="non-editable">Initial Situation 2</td><td></td><td class="non-editable">General Concept 2</td><td></td></tr>
-        <tr><td class="non-editable">Initial Situation 3</td><td></td><td class="non-editable">General Concept 3</td><td></td></tr>
-        <tr><td class="non-editable">Initial Situation 4</td><td></td><td class="non-editable">General Concept 4</td><td></td></tr>
+        <tr>
+            <td class="non-editable">Initial Situation 1</td>
+            <td>{{ announcement.init_situation1 }}</td>
+            <td class="non-editable">General Concept 1</td>
+            <td>{{ announcement.gene_concept1 }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Initial Situation 2</td>
+            <td>{{ announcement.init_situation2 }}</td>
+            <td class="non-editable">General Concept 2</td>
+            <td>{{ announcement.gene_concept2 }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Initial Situation 3</td>
+            <td>{{ announcement.init_situation3 }}</td>
+            <td class="non-editable">General Concept 3</td>
+            <td>{{ announcement.gene_concept3 }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Initial Situation 4</td>
+            <td>{{ announcement.init_situation4 }}</td>
+            <td class="non-editable">General Concept 4</td>
+            <td>{{ announcement.gene_concept4 }}</td>
+        </tr>
     </table>
     <button class="edit-button" onclick="enableEdit('section-a')">Edit</button>
     <button class="edit-button print-button" onclick="saveAndSubmitAnnoucement('section-a')">Save</button>
