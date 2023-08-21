@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404
 def start_page(request):
     if request.method == "POST":
         username = request.POST.get('username')
-        result = sign_in(username, request)
+        result = sign_in(username)
 
 
         if result:
@@ -38,7 +38,8 @@ def start_page(request):
 ###################### Navigation Page 导航页面
 
 def navigation_page(request):
-    user_projects = get_user_projects('uig27066')
+    pm = request.COOKIES.get('pm')
+    user_projects = get_user_projects(pm)
     print('suc')
     all_projects = Projects.objects.all()
     print(all_projects)
@@ -97,12 +98,21 @@ def project_site(request, project_id):
     else:
         success_message = 'Update fail'
 
-    context = {
-        'project': project,
-        'success_message': success_message,
-        'project_id':project_id,
-        'announcement': Announcement.objects.get(projectid=project),
-    }
+    try:
+        Announcement.objects.get(projectid=project)
+        context = {
+            'project': project,
+            'success_message': success_message,
+            'project_id': project_id,
+            'announcement': Announcement.objects.get(projectid=project),
+        }
+    except Announcement.DoesNotExist:
+        context = {
+            'project': project,
+            'success_message': success_message,
+            'project_id': project_id,
+        }
+
     return render(request, 'project_site.html', context)
 
 
