@@ -8,15 +8,16 @@ import json
 from .models import Users, Projects, Announcement, KickOff, Milestones, Closure
 from django.contrib.sessions.models import Session
 from django.core.exceptions import ValidationError
+from django.shortcuts import get_object_or_404
+
 ###################### Login Page 登录页面
 
 
 def start_page(request):
     if request.method == "POST":
         username = request.POST.get('username')
-        #password = request.POST.get('password')
-        result = sign_in(username)
-        #print(result.pm)
+        result = sign_in(username, request)
+
 
         if result:
             response = redirect('navigation_page')
@@ -89,18 +90,6 @@ def start_new_project(request):
     return render(request, 'start_new_project.html', context)
 
 
-
-'''
-def project_site(request):#########################See Existing Project Page用户阅读旧项目网页
-
-    user_projects = get_user_projects('uig27066')
-    print('suc')
-    all_projects = Projects.objects.all()
-    print(all_projects)
-    print(user_projects)
-    return render(request, 'project_site.html',{'projects':user_projects})
-'''
-
 def project_site(request, project_id):
     project = Projects.objects.get(pk=project_id)
     if request.POST.get('success') == 'true':
@@ -110,23 +99,72 @@ def project_site(request, project_id):
 
     context = {
         'project': project,
-        'success_message': success_message
+        'success_message': success_message,
+        'project_id':project_id
     }
     return render(request, 'project_site.html', context)
 
 
-def preview_announcement(request):######################### Announcement Review Page
-    return render(request, 'preview_announcement.html', {'title': 'Announcement Review'})
+#from .models import Projects, Announcement
 
-def kickoff_review(request):######################### Kick off Review Page
-    return render(request, 'preview_kickoff.html')
+def preview_announcement(request, project_id):
 
-def preview_milestone(request):######################### Milestone Review Page
-    return render(request, 'preview_milestone.html')
+    project = get_object_or_404(Projects, projectid=project_id)
 
-def preview_closure(request):######################### Closure Review Page
-    return render(request, 'preview_closure.html')
+    announcement = get_object_or_404(Announcement, projectid=project_id)
 
+    context = {
+        'title': 'Announcement Review',
+        'project': project,
+        'announcement': announcement,
+        'project_id': project_id
+    }
+
+    return render(request, 'preview_announcement.html', context)
+
+
+
+def kickoff_review(request, project_id):
+
+    project = get_object_or_404(Projects, projectid=project_id)
+    kickoff = get_object_or_404(KickOff, projectid=project_id)
+
+    context = {
+        'title': 'Kickoff Review',
+        'project': project,
+        'kickoff': kickoff,
+        'project_id': project_id  # 与kickoff_review相关的数据
+    }
+
+    return render(request, 'preview_kickoff.html', context)  # 确保有一个相应的HTML模板
+
+def preview_milestone(request, project_id):
+    project = get_object_or_404(Projects, projectid=project_id)
+    milestones = get_object_or_404(Milestones, projectid=project_id)
+
+    context = {
+        'title': 'Milestone Review',
+        'project': project,
+        'milestones': milestones,
+        'project_id': project_id
+    }
+
+    return render(request, 'preview_milestone.html', context)
+
+
+def preview_closure(request, project_id):
+    project = get_object_or_404(Projects, projectid=project_id)
+    closure = get_object_or_404(Closure, projectid=project_id)
+    
+    context = {
+        'project_id': project_id,  # 添加其他所需的上下文数据
+        'project': project,
+        'title':'Closure Review',
+        'closure':closure
+    }
+    return render(request, 'preview_closure.html', context)
+
+'''
 
 def sign_in(username):
 
@@ -158,11 +196,47 @@ def sign_in(username):
     else:
         return False
 '''
+
+
+def sign_in(username, request):
+    try:
+        instance = Users.objects.get(pm=username)
+
+        # 将用户信息存储到session中
+        request.session['user_data'] = {
+            'name': instance.name,
+            'email': instance.eml,
+            'department': instance.dept
+        }
+        return instance
+
+    except Users.DoesNotExist:
+        # 如果用户不存在，这里需要从其他数据源获取用户数据（这部分代码未给出）
+        # 假设从其他数据源获取的数据放在了data字典中
+        string = data.get('data', '{}')
+        data = json.loads(string)
+        attribute = data.get('attributes', {})
+        name = attribute.get('displayName', [''])[0]
+        email = attribute.get('mail', [''])[0]
+        department = attribute.get('department', [''])[0]
+        
+        info = {'pm': username, 'name': name, 'email': email, 'department': department}
+        instance = add_user(info)
+        
+        # 也将新用户信息存储到session中
+        request.session['user_data'] = {
+            'name': name,
+            'email': email,
+            'department': department
+        }
+        return instance
+
+
 def set_cookie_pm(username):
     response = HttpResponse()
     response.set_cookie('pm', username)
     return response
-'''
+
 
 def add_user(info):
     name = info['name']
@@ -206,8 +280,6 @@ def get_closure(project):
 
 
 
-
-
 def submit_new_project(request):
     if request.method == 'POST':
         # 从POST请求中获取数据
@@ -230,13 +302,11 @@ def submit_new_project(request):
         timing_milestone3 = request.POST.get('timing_milestone3')
         timing_milestone4 = request.POST.get('timing_milestone4')
 
-
         # 从动态添加的字段中提取数据
         main_target = '$$'.join([request.POST.get(f'main-target_input_{i}', '') for i in range(1, 5)])
         boundary_conditions = ' '.join([request.POST.get(f'boundary-conditions_input_{i}', '') for i in range(1, 5)])
         out_of_scope = ' '.join([request.POST.get(f'out-of-scope_input_{i}', '') for i in range(1, 5)])
         risk_uncertainties = ' '.join([request.POST.get(f'risk-and-uncertainties_input_{i}', '') for i in range(1, 5)])
-
 
 
         # 保存项目数据到数据库
