@@ -37,6 +37,8 @@
                 <input type='text' name='project_manager' />
             {% elif attribute == "Project Name" %}
                 <input type='text' name='project_name' />
+            {% elif attribute == "Main Target" %}
+                <input type='text' name='project_name' />
             {% elif attribute == "Project Status" %} <!-- 添加这里的逻辑 -->
                 <label><input type="radio" name="project_status" value="A" /> Green</label>
                 <label><input type="radio" name="project_status" value="B" /> Yellow</label>
@@ -67,7 +69,7 @@
 
         {% for attribute in attributes_after_project_type_and_dates %}
         <p>{{ attribute }}:
-            {% if attribute == "Main Target" or attribute == "Boundary Conditions" or attribute == "Out of Scope" or attribute == "Risk and Uncertainties" %}
+            {% if attribute == "Boundary Conditions" or attribute == "Out of Scope" or attribute == "Risk and Uncertainties" %}
             <div id="{{attribute|slugify}}_container">
                 <!-- No preset main target here, it will be added dynamically by JavaScript -->
             </div>
@@ -185,7 +187,6 @@
         });
     
         document.addEventListener('DOMContentLoaded', function() {
-            addItem('main-target');
             addItem('boundary-conditions');
             addItem('out-of-scope')
             addItem('risk-and-uncertainties');

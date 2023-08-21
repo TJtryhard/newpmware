@@ -9,102 +9,111 @@
     <style>
         /* Table styles */
         table {
-            border-collapse: collapse; /* This ensures that the table borders don't double up */
+            border-collapse: collapse;
             width: 100%;
         }
 
         table, th, td {
-            border: 2px solid black; /* Add borders to the table and its cells */
-            padding: 6px; /* Padding inside each cell */
+            border: 2px solid black;
+            padding: 6px;
         }
 
         .no-background {
-            background-color: transparent; /* Ensure there's no background color */
+            background-color: transparent;
         }
-        
-    </style>
-    
 
+        /* Printing styles */
+        @media print {
+            /* Hide the buttons when printing */
+            .button-container {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <h1 class="title">Announcement Review</h1>
-    <table>
-        <tr>
-            <th class="bold" colspan="2">Project Name: {{ project.project_name }}</th>
-            <th class="bold" colspan="2">Project Manager: {{ project.project_manager }}</th>
-        </tr>
-        <tr>
-            <th class="bold general-info" rowspan="10">General Information</th>
-            <td>Project Type: {{ project.project_type }}</td>
-            <td class="larger-width">Estimated Budget: {{ project.estimated_budget }}KCNY</td>
-            <td class="larger-width">IRR/Benefit: {{ project.irr }}%</td>
-        </tr>
-        <tr>
-            <td class="no-background" colspan="4">Project File Location: 【TBA】</td>
-        </tr>
-        <tr>
-            <td class="no-background" colspan="3">Project Team: {{ project.project_team }}</td>
-        </tr>
-        <tr>
-            <td rowspan="2">Timing & (Major Milestone Plan):</td>
-            <td class="smaller-width">Kick Off: {{ project.timing_kickoff }}</td>
-            <td class="smaller-width">Milestone1: {{ project.timing_milestone1 }}</td>
-        </tr>
-        <tr>
-            <td class="smaller-width">Milestone2: {{ project.timing_milestone2 }}</td>
-            <td class="smaller-width">Closure: {{ project.timing_closure }}</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="3">Main Target: {{ project.main_target }}</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="3">Boundary Conditions: {{ project.boundary_conditions }}</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="3">Out of Scope: {{ project.out_of_scope }}</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="3">Steering Committee: {{ project.steering_committee }}</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="3">Potential Risk & Uncertainties: {{ project.risk_uncertainties }}</td>
-        </tr>
-        <tr>
-            <th class="bold general-info" rowspan="3">Initial Situation & General Concept</th>
-            <td class="equal-width" rowspan="2">Initial Situation:</td>
-            <td class="equal-width" colspan="2" rowspan="2">General Concept:</td>
-        </tr>
-        <tr>
-            <!-- 这一行不需要任何单元格，因为我们已经在上面的行中指定了'rowspan="2"' -->
-        </tr>
-        <tr>
-            <td class="extra-height">
-                {{ announcement.init_situation1 }}<br>
-                {{ announcement.init_situation2 }}<br>
-                {{ announcement.init_situation3 }}<br>
-                {{ announcement.init_situation4 }}
-            </td>
-            <td class="extra-height" colspan="2">
-                {{ announcement.gene_concept1 }}<br>
-                {{ announcement.gene_concept2 }}<br>
-                {{ announcement.gene_concept3 }}<br>
-                {{ announcement.gene_concept4 }}
-            </td>
-        </tr>
-    </table>
-    
-    
+    <!-- Container for the printable content -->
+    <div id="print-content">
+        <h1 class="title">Announcement Review</h1>
+
+
+        <table>
+            <tr>
+                <th class="bold" colspan="2">Project Name: <span class="small-font">{{ project.project_name }}</span></th>
+                <th class="bold" colspan="2">Project Manager: <span class="small-font">{{ project.project_manager }}</span></th>
+            </tr>
+            <tr>
+                <th class="bold general-info" rowspan="10">General Information</th>
+                <td>Project Type: <span class="small-font">{{ project.project_type }}</span></td>
+                <td class="larger-width">Estimated Budget: <span class="small-font">{{ project.estimated_budget }}KCNY</span></td>
+                <td class="larger-width">IRR/Benefit: <span class="small-font">{{ project.irr }}%</span></td>
+            </tr>
+            <tr>
+                <td class="no-background" colspan="4">Project File Location: 【TBA】</td>
+            </tr>
+            <tr>
+                <td class="no-background" colspan="3">Project Team: <span class="small-font">{{ project.project_team }}</span></td>
+            </tr>
+            <tr>
+                <td rowspan="2">Timing & (Major Milestone Plan):</td>
+                <td class="smaller-width">Kick Off: <span class="small-font">{{ project.timing_kickoff }}</span></td>
+                <td class="smaller-width">Milestone1: <span class="small-font">{{ project.timing_milestone1 }}</span></td>
+            </tr>
+            <tr>
+                <td class="smaller-width">Milestone2: <span class="small-font">{{ project.timing_milestone2 }}</span></td>
+                <td class="smaller-width">Closure: <span class="small-font">{{ project.timing_closure }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="3">Main Target: <span class="small-font">{{ project.main_target }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="3">Boundary Conditions: <span class="small-font">{{ project.boundary_conditions }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="3">Out of Scope: <span class="small-font">{{ project.out_of_scope }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="3">Steering Committee: <span class="small-font">{{ project.steering_committee }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="3">Potential Risk & Uncertainties: <span class="small-font">{{ project.risk_uncertainties }}</span></td>
+            </tr>
+            <tr>
+                <th class="bold general-info" rowspan="3">Initial Situation & General Concept</th>
+                <td class="equal-width" rowspan="2">Initial Situation:</td>
+                <td class="equal-width" colspan="2" rowspan="2">General Concept:</td>
+            </tr>
+            <tr>
+                <!-- 这一行不需要任何单元格，因为我们已经在上面的行中指定了'rowspan="2"' -->
+            </tr>
+            <tr>
+                <td class="extra-height">
+                    <span class="small-font">{{ announcement.init_situation1 }}</span><br>
+                    <span class="small-font">{{ announcement.init_situation2 }}</span><br>
+                    <span class="small-font">{{ announcement.init_situation3 }}</span><br>
+                    <span class="small-font">{{ announcement.init_situation4 }}</span>
+                </td>
+                <td class="extra-height" colspan="2">
+                    <span class="small-font">{{ announcement.gene_concept1 }}</span><br>
+                    <span class="small-font">{{ announcement.gene_concept2 }}</span><br>
+                    <span class="small-font">{{ announcement.gene_concept3 }}</span><br>
+                    <span class="small-font">{{ announcement.gene_concept4 }}</span>
+                </td>
+            </tr>
+        </table>
+        
+    </div>
 
     <div class="button-container">
-        <a href="{% url 'project_site' project_id %}" class="button">
-            Return
-        </a>
+        <a href="{% url 'project_site' project_id %}" class="button">Return</a>
         <button onclick="saveTableAsImage()" class="button">Save as Image</button>
     </div>
+
     <script>
         function saveTableAsImage() {
-            html2canvas(document.body).then(function(canvas) {
+            const content = document.getElementById('print-content');
+            html2canvas(content).then(function(canvas) {
                 var link = document.createElement("a");
                 document.body.appendChild(link);
                 link.download = "announcement_review.png";
@@ -114,7 +123,8 @@
             });
         }
     </script>
-    
 </body>
-
 </html>
+
+
+
