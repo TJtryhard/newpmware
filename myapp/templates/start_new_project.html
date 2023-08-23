@@ -37,6 +37,8 @@
                 <input type='text' name='project_manager' />
             {% elif attribute == "Project Name" %}
                 <input type='text' name='project_name' />
+            {% elif attribute == "Main Target" %}
+                <input type='text' name='project_name' />    
             {% elif attribute == "Project Status" %} <!-- 添加这里的逻辑 -->
                 <label><input type="radio" name="project_status" value="A" /> Green</label>
                 <label><input type="radio" name="project_status" value="B" /> Yellow</label>
@@ -53,12 +55,6 @@
             <label><input type="radio" name="project_type" value="PLP" /> PLP</label>
         </p>
 
-        <!--
-        {% for date_attribute in date_attributes %}
-        <p>{{ date_attribute }}: <input type='date' name='date-field' /></p>
-        {% endfor %}
-        ----->
-
         {% for date_attribute in date_attributes %}
         <p>{{ date_attribute }}: <input type='date' name="{{ date_attribute|slugify }}" /></p>
         {% endfor %}
@@ -67,7 +63,7 @@
 
         {% for attribute in attributes_after_project_type_and_dates %}
         <p>{{ attribute }}:
-            {% if attribute == "Main Target" or attribute == "Boundary Conditions" or attribute == "Out of Scope" or attribute == "Risk and Uncertainties" %}
+            {% if attribute == "Boundary Conditions" or attribute == "Out of Scope" or attribute == "Risk and Uncertainties" %}
             <div id="{{attribute|slugify}}_container">
                 <!-- No preset main target here, it will be added dynamically by JavaScript -->
             </div>
@@ -109,7 +105,6 @@
 
     <script>
         let counters = {
-            "main-target": 0,
             "boundary-conditions": 0,
             "out-of-scope": 0,
             "risk-and-uncertainties":0,
@@ -185,7 +180,7 @@
         });
     
         document.addEventListener('DOMContentLoaded', function() {
-            addItem('main-target');
+
             addItem('boundary-conditions');
             addItem('out-of-scope')
             addItem('risk-and-uncertainties');
