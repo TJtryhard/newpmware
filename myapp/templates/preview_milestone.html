@@ -5,98 +5,126 @@
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/static/css/preview_milestone_style.css">
     <title>Milestone Review</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.js"></script>
     <style>
+        /* Added style for smaller font */
+        .smaller-font {
+            font-size: 50%;
+        }
+
+        /* Table styles */
         table {
+            border-collapse: collapse;
             width: 100%;
         }
 
-        .boundary-height {
-            height: 80px;  /* Adjust to your desired height for Boundary Condition */
+        table, th, td {
+            border: 2px solid black;
+            padding: 6px;
         }
 
-        .timing-height {
-            height: 40px;  /* Adjust to your desired height for Timing & Major Milestone Plan */
+        .no-background {
+            background-color: transparent;
         }
 
-        .fixed-height {
-            height: 50px; 
+        /* Printing styles */
+        @media print {
+            /* Hide the buttons when printing */
+            .button-container {
+                display: none;
+            }
         }
     </style>
 </head>
 
 <body>
-    <h1 class="title">Milestone Review</h1>
-    <table>
-        <colgroup>
-            <col style="width: 10%;">
-            <col style="width: 30%;">
-            <col style="width: 12%;">
-            <col style="width: 12%;">
-            <col style="width: 12%;">
-            <col style="width: 12%;">
-            <col style="width: 12%;">
-        </colgroup>
-        <tr>
-            <th class="bold" colspan="2">Project Name:</th>
-            <th class="bold" colspan="5">Project Manager:</th>
-        </tr>
-        <tr>
-            <th class="bold short-width general-info" style="text-align: center; vertical-align: middle;" rowspan="5">General Information</th>
-            <td>SPA or PLP:</td>
-            <td colspan="2">Estimated Budget:</td>
-            <td colspan="3">IRR/Benefit:</td>
-        </tr>
-        <tr>
-            <td class="no-background" colspan="6">Steering Committee: (Sponsor, Facilitator, Steering1, Steering2)</td>
-        </tr>
-        <tr class="boundary-height">
-            <td class="no-background" colspan="6">Boundary Condition:</td>
-        </tr>
-        <tr class="timing-height">
-            <td rowspan="2">Project Performace Cockpit</td>
-            <td>Deliverable</td>
-            <td>Timing</td>
-            <td>Budget</td>
-            <td>Resources</td>
-            <td>Risks</td>
-        </tr>
-        <tr class="fixed-height">
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th class="bold short-width general-info" style="text-align: center; vertical-align: middle;">Main Target</th>
-            <td class="no-background extra-height" colspan="6"></td>
-        </tr>
-        <tr>
-            <th class="bold short-width general-info" style="text-align: center; vertical-align: middle;" rowspan="4">Project Status</th>
-            <td class="no-background extra-height" colspan="6">Milestone 1:</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="6">Milestone 2:</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="6">Milestone 3:</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="6">Closure:</td>
-        </tr>
-        <tr>
-            <th class="bold" rowspan="2" style="text-align: center; vertical-align: middle;">Next Decisions to be Made</th>
-            <td class="extra-height" colspan="6" rowspan="2"></td>
-        </tr>
-    </table>
-    <div class="button-container">
-        <a href="http://127.0.0.1:8000/project_site/" class="button">
-            Return
-        </a>
-        <div class="button">
-            Download PDF
-        </div>
+    <!-- Container for the printable content -->
+    <div id="print-content">
+        <h1 class="title">Milestone Review</h1>
+        <table>
+            <colgroup>
+                <col style="width: 10%;">
+                <col style="width: 30%;">
+                <col style="width: 12%;">
+                <col style="width: 12%;">
+                <col style="width: 12%;">
+                <col style="width: 12%;">
+                <col style="width: 12%;">
+            </colgroup>
+            <tr>
+                <th class="bold" colspan="2">Project Name: <span class="smaller-font">{{ project.project_name }}</span></th>
+                <th class="bold" colspan="5">Project Manager: <span class="smaller-font">{{ project.project_manager }}</span></th>
+            </tr>
+            <tr>
+                <th class="bold short-width general-info" style="text-align: center; vertical-align: middle;" rowspan="5">General Information</th>
+                <td>SPA or PLP: <span class="smaller-font">{{ project.project_type }}</span></td>
+                <td colspan="2">Estimated Budget: <span class="smaller-font">{{ project.estimated_budget }}KCNY</span></td>
+                <td colspan="3">IRR/Benefit: <span class="smaller-font">{{ project.irr }}%</span></td>
+            </tr>
+            <tr>
+                <td class="no-background" colspan="6">Steering Committee: <span class="smaller-font">{{ project.steering_committee }}</span></td>
+            </tr>
+            <tr class="boundary-height">
+                <td class="no-background" colspan="6">Boundary Condition: <span class="smaller-font">{{ project.boundary_conditions }}</span></td>
+            </tr>
+            <tr class="timing-height">
+                <td rowspan="2">Project Performace Cockpit</td>
+                <td>Deliverable</td>
+                <td>Timing</td>
+                <td>Budget</td>
+                <td>Resources</td>
+                <td>Risks</td>
+            </tr>
+            <tr class="fixed-height">
+                <td><span class="smaller-font">{{ milestones.ppc_deliverable }}</span></td>
+                <td><span class="smaller-font">{{ milestones.ppc_timing }}</span></td>
+                <td><span class="smaller-font">{{ milestones.ppc_budget }}</span></td>
+                <td><span class="smaller-font">{{ milestones.ppc_resources }}</span></td>
+                <td><span class="smaller-font">{{ milestones.ppc_risks }}</span></td>
+            </tr>
+            <tr>
+                <th class="bold short-width general-info" style="text-align: center; vertical-align: middle;">Main Target</th>
+                <td class="no-background extra-height" colspan="6"><span class="smaller-font">{{ project.main_target }}</span></td>
+            </tr>
+            <tr>
+                <th class="bold short-width general-info" style="text-align: center; vertical-align: middle;" rowspan="4">Project Status</th>
+                <td class="no-background extra-height" colspan="6">Milestone 1:<span class="smaller-font"> {{ milestones.deliverable_ms1 }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="6">Milestone 2:<span class="smaller-font"> {{ milestones.deliverable_ms2 }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="6">Milestone 3:<span class="smaller-font"> {{ milestones.deliverable_ms3 }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="6">Closure:<span class="smaller-font"> {{ milestones.deliverable_closure }}</span></td>
+            </tr>
+            <tr>
+                <th class="bold" rowspan="2" style="text-align: center; vertical-align: middle;">Next Decisions to be Made</th>
+                <td class="extra-height" colspan="6" rowspan="2"><span class="smaller-font">{{ milestones.next_step }}</span></td>
+            </tr>
+        </table>
+        
+        
     </div>
-</body>
 
+    <div class="button-container">
+        <a href="{% url 'project_site' project_id %}" class="button">Return</a>
+        <button onclick="saveTableAsImage()" class="button">Save as Image</button>
+    </div>
+
+    <script>
+        function saveTableAsImage() {
+            const content = document.getElementById('print-content');
+            html2canvas(content).then(function(canvas) {
+                var link = document.createElement("a");
+                document.body.appendChild(link);
+                link.download = "milestone_review.png";
+                link.href = canvas.toDataURL("image/png");
+                link.target = '_blank';
+                link.click();
+            });
+        }
+    </script>
+</body>
 </html>

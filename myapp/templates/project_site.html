@@ -59,8 +59,43 @@
             sendPostRequest(data);
         }
 
+        function saveAndSubmitAnnoucement(sectionID) {
+            const urlParts = window.location.href.split('/');
+            const projectid = urlParts[urlParts.length - 2];
+            let section = document.getElementById((sectionID));
+            let cells = section.querySelectorAll('td:not(.non-editable)');
+
+            let data = {projectid: projectid};
+            for (let cell of cells) {
+                let input = cell.querySelector('input');
+                let cellKey = sectionID + '-'+cell.cellIndex+'-'+cell.parentElement.rowIndex;
+                let cellValue = input.value;
+                data[cellKey] = cellValue;
+            }
+
+            sendPostRequestAnnouncement(data);
+        }
+
         function sendPostRequest(data) {
             fetch('http://127.0.0.1:8000/edit_project/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok){
+                    console.log('Successful');
+                } else {
+                    console.log('fail')
+                }
+                console.log('data', JSON.stringify(data))
+            }).catch(error=>{console.error('POST WENT WRONG', error)});
+        }
+
+        function sendPostRequestAnnouncement(data) {
+            fetch('http://127.0.0.1:8000/edit_announcement/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -169,16 +204,37 @@
 <h2>Announcement</h2>
 <div id="section-a">
     <table>
-        <tr><td class="non-editable">Initial Situation 1</td><td></td><td class="non-editable">General Concept 1</td><td></td></tr>
-        <tr><td class="non-editable">Initial Situation 2</td><td></td><td class="non-editable">General Concept 2</td><td></td></tr>
-        <tr><td class="non-editable">Initial Situation 3</td><td></td><td class="non-editable">General Concept 3</td><td></td></tr>
-        <tr><td class="non-editable">Initial Situation 4</td><td></td><td class="non-editable">General Concept 4</td><td></td></tr>
+        <tr>
+            <td class="non-editable">Initial Situation 1</td>
+            <td>{{ announcement.init_situation1 }}</td>
+            <td class="non-editable">General Concept 1</td>
+            <td>{{ announcement.gene_concept1 }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Initial Situation 2</td>
+            <td>{{ announcement.init_situation2 }}</td>
+            <td class="non-editable">General Concept 2</td>
+            <td>{{ announcement.gene_concept2 }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Initial Situation 3</td>
+            <td>{{ announcement.init_situation3 }}</td>
+            <td class="non-editable">General Concept 3</td>
+            <td>{{ announcement.gene_concept3 }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Initial Situation 4</td>
+            <td>{{ announcement.init_situation4 }}</td>
+            <td class="non-editable">General Concept 4</td>
+            <td>{{ announcement.gene_concept4 }}</td>
+        </tr>
     </table>
     <button class="edit-button" onclick="enableEdit('section-a')">Edit</button>
-    <button class="edit-button print-button" onclick="saveEdit('section-a')">Save</button>
-    <a href="http://127.0.0.1:8000/previewannouncement/" target="_blank">
+    <button class="edit-button print-button" onclick="saveAndSubmitAnnoucement('section-a')">Save</button>
+    <a href="{% url 'preview_announcement' project.projectid %}" target="_blank">
         <button class="edit-button print-button" type="button">Print</button>
     </a>
+
 </div>
 
 <!-- After Kickoff Section -->
@@ -192,9 +248,11 @@
     </table>
     <button class="edit-button" onclick="enableEdit('section-b')">Edit</button>
     <button class="edit-button print-button" onclick="saveEdit('section-b')">Save</button>
-    <a href="http://127.0.0.1:8000/kickoff_review/" target="_blank">
+    <a href="{% url 'kickoff_review_with_id' project_id %}" target="_blank">
         <button class="edit-button print-button" type="button">Print</button>
     </a>
+
+
 </div>
 
 <!-- Milestone Section -->
@@ -209,9 +267,11 @@
     </table>
     <button class="edit-button" onclick="enableEdit('section-c')">Edit</button>
     <button class="edit-button print-button" onclick="saveEdit('section-c')">Save</button>
-    <a href="http://127.0.0.1:8000/preview_milestone/" target="_blank">
+
+    <a href="{% url 'preview_milestone_with_id' project_id %}" target="_blank">
         <button class="edit-button print-button" type="button">Print</button>
     </a>
+
 </div>
 
 <!-- Closure Section -->
@@ -228,9 +288,11 @@
     </table>
     <button class="edit-button" onclick="enableEdit('section-d')">Edit</button>
     <button class="edit-button print-button" onclick="saveEdit('section-d')">Save</button>
-    <a href="http://127.0.0.1:8000/preview_closure/" target="_blank">
+
+    <a href="{% url 'preview_closure_with_id' project_id %}" target="_blank">
         <button class="edit-button print-button" type="button">Print</button>
     </a>
+
 </div>
 </body>
 </html>

@@ -4,70 +4,122 @@
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="/static/css/preview_kickoff_style.css">
-    <title>Kick off Review</title>
+    <title>Kick Off Review</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.js"></script>
+    <style>
+        /* Table styles */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        table, th, td {
+            border: 2px solid black;
+            padding: 6px;
+        }
+
+        .no-background {
+            background-color: transparent;
+        }
+
+        /* Printing styles */
+        @media print {
+            /* Hide the buttons when printing */
+            .button-container {
+                display: none;
+            }
+        }
+    </style>
 </head>
 
 <body>
-    <h1 class="title">Kick off Review</h1>
-    <table>
-        <tr>
-            <th class="bold" colspan="2">Project Name:</th>
-            <th class="bold" colspan="2">Project Manager:</th>
-        </tr>
-        <tr>
-            <th class="bold general-info" rowspan="10">General Information</th>
-            <td>SPA or PLP:</td>
-            <td class="larger-width">Estimated Budget:</td>
-            <td class="larger-width">IRR/Benefit:</td>
-        </tr>
-        <tr>
-            <td class="no-background" colspan="4">Project File Location:</td>
-        </tr>
-        <tr>
-            <td class="no-background" colspan="3">Project Team:</td>
-        </tr>
-        <tr>
-            <td rowspan="2">Timing & (Major Milestone Plan):</td>
-            <td class="smaller-width">Kick Off:</td>
-            <td class="smaller-width">Milestone1:</td>
-        </tr>
-        <tr>
-            <td class="smaller-width">Milestone2:</td>
-            <td class="smaller-width">Closure:</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="3">Main Target:</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="3">Boundary Conditions:</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="3">Out of Scope:</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="3">Steering Committee: (Sponsor, Facilitator, Steering1, Steering2)</td>
-        </tr>
-        <tr>
-            <td class="no-background extra-height" colspan="3">Potential Risk & Uncertainties:</td>
-        </tr>
-        <tr>
-            <th class="bold general-info" rowspan="2">Sub-target & Success Criteria:</th>
-            <td class="equal-width">Sub-target:</td>
-            <td class="equal-width" colspan="2">Success Criteria:</td>
-        </tr>
-        <tr>
-            <td class="extra-height"></td>
-            <td class="extra-height" colspan="2"></td>
-        </tr>
-    </table>
-    <div class="button-container">
-        <a href="http://127.0.0.1:8000/project_site/" class="button">
-            Return
-        </a>
-        <div class="button">
-            Download PDF
-        </div>
-    </div>
-</body>
+    <!-- Container for the printable content -->
+    <div id="print-content">
+        <h1 class="title">Kick Off Review</h1>
 
+        <table>
+            <tr>
+                <th class="bold" colspan="2">Project Name: <span style="font-size: 50%;">{{ project.project_name }}</span></th>
+                <th class="bold" colspan="2">Project Manager: <span style="font-size: 50%;">{{ project.project_manager }}</span></th>
+            </tr>
+            <tr>
+                <th class="bold general-info" rowspan="10">General Information</th>
+                <td>Project Type: <span style="font-size: 50%;">{{ project.project_type }}</span></td>
+                <td class="larger-width">Estimated Budget: <span style="font-size: 50%;">{{ project.estimated_budget }}KCNY</span></td>
+                <td class="larger-width">IRR/Benefit: <span style="font-size: 50%;">{{ project.irr }}%</span></td>
+            </tr>
+            <tr>
+                <td class="no-background" colspan="4">Project File Location: 【TBA】</td>
+            </tr>
+            <tr>
+                <td class="no-background" colspan="3">Project Team: <span style="font-size: 50%;">{{ project.project_team }}</span></td>
+            </tr>
+            <tr>
+                <td rowspan="2">Timing & (Major Milestone Plan):</td>
+                <td class="smaller-width">Kick Off: <span style="font-size: 50%;">{{ project.timing_kickoff }}</span></td>
+                <td class="smaller-width">Milestone1: <span style="font-size: 50%;">{{ project.timing_milestone1 }}</span></td>
+            </tr>
+            <tr>
+                <td class="smaller-width">Milestone2: <span style="font-size: 50%;">{{ project.timing_milestone2 }}</span></td>
+                <td class="smaller-width">Closure: <span style="font-size: 50%;">{{ project.timing_closure }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="3">Main Target: <span style="font-size: 50%;">{{ project.main_target }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="3">Boundary Conditions: <span style="font-size: 50%;">{{ project.boundary_conditions }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="3">Out of Scope: <span style="font-size: 50%;">{{ project.out_of_scope }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="3">Steering Committee: <span style="font-size: 50%;">{{ project.steering_committee }}</span></td>
+            </tr>
+            <tr>
+                <td class="no-background extra-height" colspan="3">Potential Risk & Uncertainties: <span style="font-size: 50%;">{{ project.risk_uncertainties }}</span></td>
+            </tr>
+            <tr>
+                <th class="bold general-info" rowspan="3">Sub-target & Success Criteria:</th>
+                <td class="equal-width" rowspan="2">Sub-target:</td>
+                <td class="equal-width" colspan="2" rowspan="2">Success Criteria:</td>
+            </tr>
+            <tr>
+                <!-- Empty row due to rowspan -->
+            </tr>
+            <tr>
+                <td class="extra-height">
+                    <span style="font-size: 50%;">{{ kickoff.sub_target1 }}</span><br>
+                    <span style="font-size: 50%;">{{ kickoff.sub_target2 }}</span><br>
+                    <span style="font-size: 50%;">{{ kickoff.sub_target3 }}</span><br>
+                    <span style="font-size: 50%;">{{ kickoff.sub_target4 }}</span>
+                </td>
+                <td class="extra-height" colspan="2">
+                    <span style="font-size: 50%;">{{ kickoff.success_criteria1 }}</span><br>
+                    <span style="font-size: 50%;">{{ kickoff.success_criteria2 }}</span><br>
+                    <span style="font-size: 50%;">{{ kickoff.success_criteria3 }}</span><br>
+                    <span style="font-size: 50%;">{{ kickoff.success_criteria4 }}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="button-container">
+        <a href="{% url 'project_site' project_id %}" class="button">Return</a>
+        <button onclick="saveTableAsImage()" class="button">Save as Image</button>
+    </div>
+
+    <script>
+        function saveTableAsImage() {
+            const content = document.getElementById('print-content');
+            html2canvas(content).then(function(canvas) {
+                var link = document.createElement("a");
+                document.body.appendChild(link);
+                link.download = "kickoff_review.png";
+                link.href = canvas.toDataURL("image/png");
+                link.target = '_blank';
+                link.click();
+            });
+        }
+    </script>
+</body>
 </html>

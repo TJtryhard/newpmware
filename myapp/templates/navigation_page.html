@@ -7,7 +7,7 @@
 </head>
 <body>
     <h1>Navigation Page</h1>
-    <a href="http://localhost:8000/start_new_project/"><button class="start-new-project-button">Start New Project</button></a>
+    <a href="http://127.0.0.1:8000/start_new_project/"><button class="start-new-project-button">Start New Project</button></a>
 
     <!-- Projects Table -->
     <h2>Projects</h2>
@@ -21,16 +21,29 @@
         </tr>
         <tbody>
         <!-- Display Your Project -->
+        <!-- Display Your Project -->
         {% for project in projects %}
         <tr>
             <td>{{ project.projectid }}</td>
-            <!-- Updated line below to make project name a clickable link -->
             <td><a href="{% url 'project_site' project.projectid %}">{{ project.project_name }}</a></td>
             <td>{{ project.project_manager}}</td>
             <td>{{ project.project_type }}</td>
-            <td>{{ project.project_status }}</td>
+            <td>
+                {% if project.project_status == 'red' %}
+                    <span class="status-color-box" style="background-color:red;"></span>
+                {% elif project.project_status == 'yellow' %}
+                    <span class="status-color-box" style="background-color:yellow;"></span>
+                {% elif project.project_status == 'green' %}
+                    <span class="status-color-box" style="background-color:green;"></span>
+                {% elif project.project_status == 'grey' %}
+                    <span class="status-color-box" style="background-color:grey;"></span>
+                {% else %}
+                    {{ project.project_status }}
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
+
 
         </tbody>
     </table>
