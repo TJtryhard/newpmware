@@ -101,4 +101,11 @@ td[colspan="2"] {
 .smaller-width-half {
     width: 50%;
 }
+/*... 省略其他CSS ...*/
+
+.small-font {
+    font-weight: normal;  /* 设置字体为普通，不加粗 */
+    font-size: 0.5em;    /* 字体大小为当前大小的90% */
+}
+
 
