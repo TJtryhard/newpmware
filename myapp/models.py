@@ -44,6 +44,7 @@ class Projects(models.Model):
     boundary_conditions = models.CharField(db_column='Boundary_conditions', max_length=2000, blank=True, null=True) # Field name made lowercase.
     out_of_scope = models.CharField(db_column='Out_of_scope', max_length=2000, blank=True, null=True) # Field name made lowercase.
     steering_committee = models.CharField(db_column='Steering_committee', max_length=2000, blank=True, null=True) # Field name made lowercase.
+    sponsor= models.CharField(db_column='Sponsor', max_length=2000, blank=True, null=True) # Field name made lowercase.
     facilitator = models.CharField(db_column='Facilitator', max_length=2000, blank=True, null=True) # Field name made lowercase.
     risk_uncertainties = models.CharField(db_column='Risk_uncertainties', max_length=2000, blank=True, null=True) # Field name made lowercase.
 

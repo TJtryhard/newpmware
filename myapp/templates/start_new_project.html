@@ -1,9 +1,8 @@
 {% load static %}
-{% csrf_token %}
-        
+{% csrf_token %}       
 <!DOCTYPE html>
-<html>
 
+<html>
 <head>
     <title>New Project Table (General Information)</title>
     <link rel="stylesheet" href="{% static 'css/start_new_project_style.css' %}">
@@ -11,97 +10,92 @@
 
 <body>
     <div class="header">
-        <a href="http://127.0.0.1:8000/navigation/"><img src="{% static 'images/Continental Logo.png' %}" alt="Logo" class="logo"></a>
+        <a href="http://localhost:8000/navigation/"><img src="{% static 'images/Continental Logo.png' %}" alt="Logo" class="logo"></a>
         <h1>New Project Table (General Information)</h1>
     </div>
 
-    <!----<p>
-    <form action="{% url 'submit_new_project' %}" method="post">
-    <form action="{% url 'check_data' %}" method="post"></form>
-    -->
+
 
     <form action="{% url 'submit_new_project' %}" method="post">
         {% csrf_token %}
-
-
-        
-
-    <div class="container">
-        {% for attribute in attributes_before_project_type %}
-        <p>{{ attribute }}:
-            {% if attribute == "Estimated Budget" %}
-                <input type='text' name='estimated_budget' style='width: 100px;' /> KCNY
-            {% elif attribute == "IRR" %}
-                <input type='text' name='irr' style='width: 100px;' /> %
-            {% elif attribute == "Project Manager" %}
-                <input type='text' name='project_manager' />
-            {% elif attribute == "Project Name" %}
-                <input type='text' name='project_name' />
-            {% elif attribute == "Main Target" %}
-                <input type='text' name='project_name' />    
-            {% elif attribute == "Project Status" %} <!-- 添加这里的逻辑 -->
-                <label><input type="radio" name="project_status" value="A" /> Green</label>
-                <label><input type="radio" name="project_status" value="B" /> Yellow</label>
-                <label><input type="radio" name="project_status" value="C" /> Red</label>
-                <label><input type="radio" name="project_status" value="D" /> Grey</label>
-            {% else %}
-                <input type='text' name='input-field' />
-            {% endif %}
-        </p>
-        {% endfor %}
-        
-        <p>Project Type:
-            <label><input type="radio" name="project_type" value="SPA" /> SPA</label>
-            <label><input type="radio" name="project_type" value="PLP" /> PLP</label>
-        </p>
-
-        {% for date_attribute in date_attributes %}
-        <p>{{ date_attribute }}: <input type='date' name="{{ date_attribute|slugify }}" /></p>
-        {% endfor %}
-
-
-
-        {% for attribute in attributes_after_project_type_and_dates %}
-        <p>{{ attribute }}:
-            {% if attribute == "Boundary Conditions" or attribute == "Out of Scope" or attribute == "Risk and Uncertainties" %}
-            <div id="{{attribute|slugify}}_container">
-                <!-- No preset main target here, it will be added dynamically by JavaScript -->
-            </div>
-            <button type="button" onclick="addItem('{{attribute|slugify}}')">Add More</button>
-            {% elif attribute == "Facilitator" %}
-            <select name="facilitator">
-                {% for facilitator in facilitators %}
+    
+        <div class="container">
+            {% for attribute in attributes_before_project_type %}
+            <p>{{ attribute }}:
+                {% if attribute == "Estimated Budget" %}
+                    <input type='text' name='estimated_budget' style='width: 100px;' /> KCNY
+                {% elif attribute == "IRR" %}
+                    <input type='text' name='irr' style='width: 100px;' /> %
+                {% elif attribute == "Project Manager" %}
+                    <input type='text' name='project_manager' />
+                {% elif attribute == "Project Name" %}
+                    <input type='text' name='project_name' />
+                {% elif attribute == "Main Target" %}
+                    <input type='text' name='main_target' />    
+                {% elif attribute == "Project Status" %}
+                    <label><input type="radio" name="project_status" value="green" /> Green</label>
+                    <label><input type="radio" name="project_status" value="yellow" /> Yellow</label>
+                    <label><input type="radio" name="project_status" value="red" /> Red</label>
+                    <label><input type="radio" name="project_status" value="grey" /> Grey</label>
+                {% else %}
+                    <input type='text' name='input-field' />
+                {% endif %}
+            </p>
+            {% endfor %}
+            
+            <p>Project Type:
+                <label><input type="radio" name="project_type" value="SPA" /> SPA</label>
+                <label><input type="radio" name="project_type" value="PLP" /> PLP</label>
+            </p>
+    
+            {% for date_attribute in date_attributes %}
+            <p>{{ date_attribute }}: <input type='date' name="{{ date_attribute|slugify }}" /></p>
+            {% endfor %}
+    
+            {% for attribute in attributes_after_project_type_and_dates %}
+<p>{{ attribute }}:
+    {% if attribute == "Boundary Conditions" or attribute == "Out of Scope" or attribute == "Risk and Uncertainties" %}
+        <div id="{{attribute|slugify}}_container">
+            <!-- No preset main target here, it will be added dynamically by JavaScript -->
+        </div>
+        <button type="button" onclick="addItem('{{attribute|slugify}}')">Add More</button>
+    {% elif attribute == "Facilitator" %}
+        <select name="facilitator">
+            {% for facilitator in facilitators %}
                 <option value="{{ facilitator }}">{{ facilitator }}</option>
-                {% endfor %}
-            </select>
-            {% elif attribute == "Steering committee" %}
-            <select name="steering_committee">
-                {% for member in steering_committee %}
+            {% endfor %}
+        </select>
+    {% elif attribute == "Sponsor" %}
+        <select name="sponsor">
+            {% for member in steering_committee %}
                 <option value="{{ member }}">{{ member }}</option>
-                {% endfor %}
-            </select>
-            {% else %}
-            <input type='text' name='input-field' />
-            {% endif %}
-        </p>
-        {% endfor %}
+            {% endfor %}
+        </select>
+        {% elif attribute == "Steering committee" %}
+    {% for member in steering_committee %}
+        <label>
+            <input type="checkbox" name="steering_committee" value="{{ member }}" /> {{ member }}
+        </label>
+    {% endfor %}
 
-        <!---
+    
+    {% else %}
+        <input type='text' name='input-field' />
+    {% endif %}
+</p>
+{% endfor %}
 
-        <button class="custom-button" onclick="saveDataToLocal()">Save</button>
-        <button class="custom-button" type="submit">Submit</button>
-        <button class="custom-button" id="clear-all-button">Clear All</button>
-
-        -->
-
-        <button class="custom-button" type="button" onclick="saveDataToLocal()">Save</button>
-        <button class="custom-button" type="submit">Submit</button>
-        <button class="custom-button" id="clear-all-button">Clear All</button>
-
-
-    </div>
+    
+            <button class="custom-button" type="button" onclick="saveDataToLocal()">Save</button>
+            <button class="custom-button" type="submit">Submit</button>
+            <button class="custom-button" id="clear-all-button">Clear All</button>
+    
+        </div>
     </form>
+    
+    
 
+    
 
     <script>
         let counters = {

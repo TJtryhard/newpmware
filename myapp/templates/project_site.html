@@ -77,7 +77,7 @@
         }
 
         function sendPostRequest(data) {
-            fetch('http://127.0.0.1:8000/edit_project/', {
+            fetch('http://localhost:8000/edit_project/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -95,7 +95,7 @@
         }
 
         function sendPostRequestAnnouncement(data) {
-            fetch('http://127.0.0.1:8000/edit_announcement/', {
+            fetch('http://localhost:8000/edit_announcement/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -130,7 +130,7 @@
 </head>
 
 <body onload="loadDataFromLocalStorage()">
-    <a href="http://127.0.0.1:8000/navigation/">
+    <a href="http://localhost:8000/navigation/">
         <img id="logo-button" src="/static/images/Continental Logo.png" alt="Logo" />
     </a>
 
@@ -190,7 +190,7 @@
             <td>{{ project.facilitator }}</td>
         </tr>
         <tr>
-            <td class="non-editable">Out of Scope</td>
+            <td class="non-editable">Out of Scopy</td>
             <td>{{ project.out_of_scope }}</td>
             <td class="non-editable">Risks and Uncertainties</td>
             <td>{{ project.risk_uncertainties }}</td>
@@ -256,6 +256,7 @@
 </div>
 
 <!-- Milestone Section -->
+{% if project.project_type == 'PLP' %}
 <h2>Milestone</h2>
 <div id="section-c">
     <table>
@@ -271,8 +272,9 @@
     <a href="{% url 'preview_milestone_with_id' project_id %}" target="_blank">
         <button class="edit-button print-button" type="button">Print</button>
     </a>
-
 </div>
+{% endif %}
+
 
 <!-- Closure Section -->
 <h2>Closure</h2>

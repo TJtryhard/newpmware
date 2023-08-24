@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404
 def start_page(request):
     if request.method == "POST":
         username = request.POST.get('username')
-        result = sign_in(username)
+        result = sign_in(username, request)
 
 
         if result:
@@ -32,6 +32,8 @@ def start_page(request):
         "message": message
     }
     return render(request, 'login.html', context)
+
+
 
 
 
@@ -67,9 +69,11 @@ def start_new_project(request):
             "Project Manager", 
             "Estimated Budget",
             "IRR",
-            "Project Status"
+            "Project Status",
+            "Main Target",
         ],
-        "managers": ["Apple", "Banana", "Cherry", "Durian", "Elderberry", "Fig", "Grape"],
+
+        "sponsors": ["Apple", "Banana", "Cherry", "Durian", "Elderberry", "Fig", "Grape"],
         "facilitators": ["Jing Yang", "Lisa Shi", "Runkun Wang"],
         "steering_committee": ["Jeff Wang", "Yuan Zhou", "Yi Sun", "Brian Yang", "Li Yan", "Tony Huang", "Sam Guo", "Rowena Tao","Covey Wang", "Hairui Liu", "Bingyan Wang", "Abhishek Kumar"],
         
@@ -77,11 +81,12 @@ def start_new_project(request):
         "date_attributes": list(date_attributes_mapping.values()),
 
         "attributes_after_project_type_and_dates": [
-            "Main Target",
+
             "Boundary Conditions",
             "Out of Scope",
             "Steering committee",
             "Facilitator",
+            "Sponsor",
             "Risk and Uncertainties"
         ],
         # 保留映射，以备在模板中显示友好的名称
@@ -175,7 +180,7 @@ def preview_closure(request, project_id):
     }
     return render(request, 'preview_closure.html', context)
 
-
+"""
 def sign_in(username):
 
     url = 'http://10.246.97.75:8011/sso/admin/getinfo'
@@ -205,10 +210,10 @@ def sign_in(username):
             return instance
     else:
         return False
+"""
 
 
 
-'''
 def sign_in(username, request):
     try:
         instance = Users.objects.get(pm=username)
@@ -241,7 +246,7 @@ def sign_in(username, request):
             'department': department
         }
         return instance
-'''
+
 
 def set_cookie_pm(username):
     response = HttpResponse()
@@ -301,6 +306,10 @@ def submit_new_project(request):
         project_manager = request.POST.get('project_manager')
         project_type = request.POST.get('project_type')
         facilitator = request.POST.get('facilitator')
+        main_target =request.POST.get('main_target')
+        sponsor = request.POST.get('sponsor')
+        project_status = request.POST.get('project_status')
+
 
         pm = request.COOKIES.get('pm')
         pm = Users.objects.get(pm=pm)
@@ -313,11 +322,16 @@ def submit_new_project(request):
         timing_milestone3 = request.POST.get('timing_milestone3')
         timing_milestone4 = request.POST.get('timing_milestone4')
 
-        # 从动态添加的字段中提取数据
-        main_target = '$$'.join([request.POST.get(f'main-target_input_{i}', '') for i in range(1, 5)])
-        boundary_conditions = ' '.join([request.POST.get(f'boundary-conditions_input_{i}', '') for i in range(1, 5)])
-        out_of_scope = ' '.join([request.POST.get(f'out-of-scope_input_{i}', '') for i in range(1, 5)])
-        risk_uncertainties = ' '.join([request.POST.get(f'risk-and-uncertainties_input_{i}', '') for i in range(1, 5)])
+        # 从动态添加的字段中提取数据\
+
+        boundary_conditions = '~'.join([request.POST.get(f'boundary-conditions_input_{i}', '') for i in range(1, 5)])
+        out_of_scope = '~'.join([request.POST.get(f'out-of-scope_input_{i}', '') for i in range(1, 5)])
+        risk_uncertainties = '~'.join([request.POST.get(f'risk-and-uncertainties_input_{i}', '') for i in range(1, 5)])
+
+        # 获取 Steering committee 的多选复选框的值并合并为一个字符串
+        steering_committee = ','.join(request.POST.getlist('steering_committee'))
+
+
 
 
         # 保存项目数据到数据库
@@ -329,7 +343,10 @@ def submit_new_project(request):
             irr=irr,
             project_manager=project_manager,
             project_type=project_type,
+            project_status=project_status,
             facilitator=facilitator,
+            sponsor=sponsor,
+            steering_committee=steering_committee,
             timing_kickoff=timing_kickoff,
             timing_closure=timing_closure,
             main_target=main_target,
@@ -340,6 +357,7 @@ def submit_new_project(request):
             timing_milestone2=timing_milestone2,
             timing_milestone3=timing_milestone3,
             timing_milestone4=timing_milestone4,
+            
         )
         project.save()
 
@@ -352,6 +370,9 @@ def submit_new_project(request):
             'project_manager': project_manager,
             'project_type': project_type,
             'facilitator': facilitator,
+            'sponsor': sponsor,
+            'project_status': project_status,
+            'steering_committee': steering_committee,
             'timing_kickoff': timing_kickoff,
             'timing_closure': timing_closure,
             'main_target': main_target,
@@ -392,6 +413,9 @@ def update_project(request, projectid):
         project_manager = request.POST.get('project_manager')
         project_type = request.POST.get('project_type')
         facilitator = request.POST.get('facilitator')
+        sponsor = reqest.POST.get('sponsor')
+        project_status = request.POST.get('project_status')
+        main_target = request.POST.get('main_target')
 
         # 获取项目的开始和结束日期
         timing_kickoff = request.POST.get('timing_kickoff')
@@ -402,7 +426,7 @@ def update_project(request, projectid):
         timing_milestone4 = request.POST.get('timing_milestone4')
 
         # 从动态添加的字段中提取数据
-        main_target = '$$'.join([request.POST.get(f'main-target_input_{i}', '') for i in range(1, 5)])
+        #main_target = '$$'.join([request.POST.get(f'main-target_input_{i}', '') for i in range(1, 5)])
         boundary_conditions = ' '.join([request.POST.get(f'boundary-conditions_input_{i}', '') for i in range(1, 5)])
         out_of_scope = ' '.join([request.POST.get(f'out-of-scope_input_{i}', '') for i in range(1, 5)])
         risk_uncertainties = ' '.join([request.POST.get(f'risk-and-uncertainties_input_{i}', '') for i in range(1, 5)])
@@ -414,6 +438,7 @@ def update_project(request, projectid):
         project.estimated_budget=estimated_budget
         project.irr=irr
         project.facilitator=facilitator
+        project.sponsor=sponsor
 
         project.timing_closure=timing_closure
         project.timing_kickoff=timing_kickoff
