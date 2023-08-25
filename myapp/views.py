@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404
 def start_page(request):
     if request.method == "POST":
         username = request.POST.get('username')
-        result = sign_in(username, request)
+        result = sign_in(username)
 
 
         if result:
@@ -32,8 +32,6 @@ def start_page(request):
         "message": message
     }
     return render(request, 'login.html', context)
-
-
 
 
 
@@ -111,6 +109,22 @@ def project_site(request, project_id):
             'project_id': project_id,
             'announcement': Announcement.objects.get(projectid=project),
         }
+        try:
+            KickOff.objects.get(projectid=project)
+            context = {
+                'project': project,
+                'success_message': success_message,
+                'project_id': project_id,
+                'announcement': Announcement.objects.get(projectid=project),
+                'kickoff': KickOff.objects.get(projectid=project),
+            }
+        except KickOff.DoesNotExist:
+            context = {
+                'project': project,
+                'success_message': success_message,
+                'project_id': project_id,
+                'announcement': Announcement.objects.get(projectid=project),
+            }
     except Announcement.DoesNotExist:
         context = {
             'project': project,
@@ -180,7 +194,7 @@ def preview_closure(request, project_id):
     }
     return render(request, 'preview_closure.html', context)
 
-"""
+
 def sign_in(username):
 
     url = 'http://10.246.97.75:8011/sso/admin/getinfo'
@@ -210,10 +224,10 @@ def sign_in(username):
             return instance
     else:
         return False
-"""
 
 
 
+'''
 def sign_in(username, request):
     try:
         instance = Users.objects.get(pm=username)
@@ -246,7 +260,7 @@ def sign_in(username, request):
             'department': department
         }
         return instance
-
+'''
 
 def set_cookie_pm(username):
     response = HttpResponse()
@@ -306,7 +320,7 @@ def submit_new_project(request):
         project_manager = request.POST.get('project_manager')
         project_type = request.POST.get('project_type')
         facilitator = request.POST.get('facilitator')
-        main_target =request.POST.get('main_target')
+        main_target = request.POST.get('main_target')
         sponsor = request.POST.get('sponsor')
         project_status = request.POST.get('project_status')
 
@@ -357,7 +371,7 @@ def submit_new_project(request):
             timing_milestone2=timing_milestone2,
             timing_milestone3=timing_milestone3,
             timing_milestone4=timing_milestone4,
-            
+
         )
         project.save()
 
@@ -413,7 +427,7 @@ def update_project(request, projectid):
         project_manager = request.POST.get('project_manager')
         project_type = request.POST.get('project_type')
         facilitator = request.POST.get('facilitator')
-        sponsor = reqest.POST.get('sponsor')
+        sponsor = request.POST.get('sponsor')
         project_status = request.POST.get('project_status')
         main_target = request.POST.get('main_target')
 
@@ -475,15 +489,49 @@ def edit_announcement(request):
     except Announcement.DoesNotExist:
         project = Projects.objects.get(projectid=projectid)
         Announcement.objects.create(
-            projectid = project,
+            projectid=project,
             init_situation1=data.get('section-a-1-0'),
-            init_situation2= data.get('section-a-1-1'),
+            init_situation2=data.get('section-a-1-1'),
             init_situation3=data.get('section-a-1-2'),
             init_situation4=data.get('section-a-1-3'),
             gene_concept1=data.get('section-a-3-0'),
             gene_concept2=data.get('section-a-3-1'),
             gene_concept3=data.get('section-a-3-2'),
             gene_concept4=data.get('section-a-3-3')
+        )
+        return JsonResponse({'success': True})
+    except ValidationError:
+        return JsonResponse({'success': False})
+
+
+def edit_kickoff(request):
+    data = json.loads(request.body.decode('utf-8'))
+    projectid = data.get('projectid')
+    try:
+        project = Projects.objects.get(projectid=projectid)
+        kickoff = KickOff.objects.get(projectid=project)
+        kickoff.sub_target1 = data.get('section-b-1-0')
+        kickoff.sub_target2 = data.get('section-b-1-1')
+        kickoff.sub_target3 = data.get('section-b-1-2')
+        kickoff.sub_target4 = data.get('section-b-1-3')
+        kickoff.success_criteria1 = data.get('section-b-3-0')
+        kickoff.success_criteria2 = data.get('section-b-3-1')
+        kickoff.success_criteria3 = data.get('section-b-3-2')
+        kickoff.success_criteria4 = data.get('section-b-3-3')
+        kickoff.save()
+        return JsonResponse({'success': True})
+    except KickOff.DoesNotExist:
+        project = Projects.objects.get(projectid=projectid)
+        KickOff.objects.create(
+            projectid=project,
+            sub_target1=data.get('section-b-1-0'),
+            sub_target2=data.get('section-b-1-1'),
+            sub_target3=data.get('section-b-1-2'),
+            sub_target4=data.get('section-b-1-3'),
+            success_criteria1=data.get('section-b-3-0'),
+            success_criteria2=data.get('section-b-3-1'),
+            success_criteria3=data.get('section-b-3-2'),
+            success_criteria4=data.get('section-b-3-3')
         )
         return JsonResponse({'success': True})
     except ValidationError:

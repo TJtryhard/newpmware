@@ -59,7 +59,7 @@
             sendPostRequest(data);
         }
 
-        function saveAndSubmitAnnoucement(sectionID) {
+        function saveAndSubmitAnnouncement(sectionID) {
             const urlParts = window.location.href.split('/');
             const projectid = urlParts[urlParts.length - 2];
             let section = document.getElementById((sectionID));
@@ -74,6 +74,23 @@
             }
 
             sendPostRequestAnnouncement(data);
+        }
+
+        function saveAndSubmitKickoff(sectionID) {
+            const urlParts = window.location.href.split('/');
+            const projectid = urlParts[urlParts.length - 2];
+            let section = document.getElementById((sectionID));
+            let cells = section.querySelectorAll('td:not(.non-editable)');
+
+            let data = {projectid: projectid};
+            for (let cell of cells) {
+                let input = cell.querySelector('input');
+                let cellKey = sectionID + '-'+cell.cellIndex+'-'+cell.parentElement.rowIndex;
+                let cellValue = input.value;
+                data[cellKey] = cellValue;
+            }
+
+            sendPostRequestKickoff(data);
         }
 
         function sendPostRequest(data) {
@@ -96,6 +113,24 @@
 
         function sendPostRequestAnnouncement(data) {
             fetch('http://localhost:8000/edit_announcement/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify(data)
+            }).then(response => {
+                if (response.ok){
+                    console.log('Successful');
+                } else {
+                    console.log('fail')
+                }
+                console.log('data', JSON.stringify(data))
+            }).catch(error=>{console.error('POST WENT WRONG', error)});
+        }
+
+        function sendPostRequestKickoff(data) {
+            fetch('http://localhost:8000/edit_kickoff/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -230,7 +265,7 @@
         </tr>
     </table>
     <button class="edit-button" onclick="enableEdit('section-a')">Edit</button>
-    <button class="edit-button print-button" onclick="saveAndSubmitAnnoucement('section-a')">Save</button>
+    <button class="edit-button print-button" onclick="saveAndSubmitAnnouncement('section-a')">Save</button>
     <a href="{% url 'preview_announcement' project.projectid %}" target="_blank">
         <button class="edit-button print-button" type="button">Print</button>
     </a>
@@ -241,13 +276,33 @@
 <h2>After Kick Off</h2>
 <div id="section-b">
     <table>
-        <tr><td class="non-editable">Sub-target 1</td><td></td><td class="non-editable">Success Criteria 1</td><td></td></tr>
-        <tr><td class="non-editable">Sub-target 2</td><td></td><td class="non-editable">Success Criteria 2</td><td></td></tr>
-        <tr><td class="non-editable">Sub-target 3</td><td></td><td class="non-editable">Success Criteria 3</td><td></td></tr>
-        <tr><td class="non-editable">Sub-target 4</td><td></td><td class="non-editable">Success Criteria 4</td><td></td></tr>
+        <tr>
+            <td class="non-editable">Sub-target 1</td>
+            <td>{{ kickoff.sub_target1 }}</td>
+            <td class="non-editable">Success Criteria 1</td>
+            <td>{{ kickoff.success_criteria1 }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Sub-target 2</td>
+            <td>{{ kickoff.sub_target2 }}</td>
+            <td class="non-editable">Success Criteria 2</td>
+            <td>{{ kickoff.success_criteria2 }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Sub-target 3</td>
+            <td>{{ kickoff.sub_target3 }}</td>
+            <td class="non-editable">Success Criteria 3</td>
+            <td>{{ kickoff.success_criteria3 }}</td>
+        </tr>
+        <tr>
+            <td class="non-editable">Sub-target 4</td>
+            <td>{{ kickoff.sub_target4 }}</td>
+            <td class="non-editable">Success Criteria 4</td>
+            <td>{{ kickoff.success_criteria4 }}</td>
+        </tr>
     </table>
     <button class="edit-button" onclick="enableEdit('section-b')">Edit</button>
-    <button class="edit-button print-button" onclick="saveEdit('section-b')">Save</button>
+    <button class="edit-button print-button" onclick="saveAndSubmitKickoff('section-b')">Save</button>
     <a href="{% url 'kickoff_review_with_id' project_id %}" target="_blank">
         <button class="edit-button print-button" type="button">Print</button>
     </a>
