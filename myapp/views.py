@@ -64,7 +64,7 @@ def start_new_project(request):
     context = {
         "attributes_before_project_type": [
             "Project Name",
-            "Project Manager", 
+            "Project Team",
             "Estimated Budget",
             "IRR",
             "Project Status",
@@ -101,6 +101,15 @@ def project_site(request, project_id):
     else:
         success_message = 'Update fail'
 
+    boundary_conditions = project.boundary_conditions.split("~")
+    boundary_conditions = boundary_conditions[:-1]
+
+    out_of_scope = project.out_of_scope.split("~")
+    out_of_scope = out_of_scope[:-1]
+
+    risks = project.risk_uncertainties.split("~")
+    risks = risks[:-1]
+
     try:
         Announcement.objects.get(projectid=project)
         context = {
@@ -108,6 +117,9 @@ def project_site(request, project_id):
             'success_message': success_message,
             'project_id': project_id,
             'announcement': Announcement.objects.get(projectid=project),
+            'boundary_conditions':  boundary_conditions,
+            'out_of_scope': out_of_scope,
+            'risks': risks,
         }
         try:
             KickOff.objects.get(projectid=project)
@@ -117,6 +129,9 @@ def project_site(request, project_id):
                 'project_id': project_id,
                 'announcement': Announcement.objects.get(projectid=project),
                 'kickoff': KickOff.objects.get(projectid=project),
+                'boundary_conditions': boundary_conditions,
+                'out_of_scope': out_of_scope,
+                'risks': risks,
             }
         except KickOff.DoesNotExist:
             context = {
@@ -124,12 +139,18 @@ def project_site(request, project_id):
                 'success_message': success_message,
                 'project_id': project_id,
                 'announcement': Announcement.objects.get(projectid=project),
+                'boundary_conditions': boundary_conditions,
+                'out_of_scope': out_of_scope,
+                'risks': risks,
             }
     except Announcement.DoesNotExist:
         context = {
             'project': project,
             'success_message': success_message,
             'project_id': project_id,
+            'boundary_conditions': boundary_conditions,
+            'out_of_scope': out_of_scope,
+            'risks': risks,
         }
 
     return render(request, 'project_site.html', context)
@@ -314,10 +335,9 @@ def submit_new_project(request):
     if request.method == 'POST':
         # 从POST请求中获取数据
         project_name = request.POST.get('project_name')
-        projectid = request.POST.get('project_id')  # 调整了变量名以匹配模型
+        project_team = request.POST.get('project_team')
         estimated_budget = request.POST.get('estimated_budget')
         irr = request.POST.get('irr')
-        project_manager = request.POST.get('project_manager')
         project_type = request.POST.get('project_type')
         facilitator = request.POST.get('facilitator')
         main_target = request.POST.get('main_target')
@@ -336,6 +356,16 @@ def submit_new_project(request):
         timing_milestone3 = request.POST.get('timing_milestone3')
         timing_milestone4 = request.POST.get('timing_milestone4')
 
+        if timing_milestone1 == '':
+            timing_milestone1 = None
+        if timing_milestone2 == '':
+            timing_milestone2 = None
+        if timing_milestone3 == '':
+            timing_milestone3 = None
+        if timing_milestone4 == '':
+            timing_milestone4 = None
+
+
         # 从动态添加的字段中提取数据\
 
         boundary_conditions = '~'.join([request.POST.get(f'boundary-conditions_input_{i}', '') for i in range(1, 5)])
@@ -345,14 +375,14 @@ def submit_new_project(request):
         # 获取 Steering committee 的多选复选框的值并合并为一个字符串
         steering_committee = ','.join(request.POST.getlist('steering_committee'))
 
-
+        project_manager = pm.name
 
 
         # 保存项目数据到数据库
         project = Projects(
             project_name=project_name,
+            project_team=project_team,
             pm=pm,
-            projectid=projectid,
             estimated_budget=estimated_budget,
             irr=irr,
             project_manager=project_manager,
@@ -378,7 +408,6 @@ def submit_new_project(request):
         # 保存数据到session中，供check_submitted_data视图使用
         request.session['submitted_data'] = {
             'project_name': project_name,
-            'projectid': projectid,
             'estimated_budget': estimated_budget,
             'irr': irr,
             'project_manager': project_manager,
@@ -424,7 +453,6 @@ def update_project(request, projectid):
         project_name = request.POST.get('project_name')
         estimated_budget = request.POST.get('estimated_budget')
         irr = request.POST.get('irr')
-        project_manager = request.POST.get('project_manager')
         project_type = request.POST.get('project_type')
         facilitator = request.POST.get('facilitator')
         sponsor = request.POST.get('sponsor')

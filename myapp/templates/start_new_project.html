@@ -22,17 +22,17 @@
         <div class="container">
             {% for attribute in attributes_before_project_type %}
             <p>{{ attribute }}:
-                {% if attribute == "Estimated Budget" %}
+                {% if attribute == "Estimated Budget" %}<span style="color: red">*</span>
                     <input type='text' name='estimated_budget' style='width: 100px;' /> KCNY
-                {% elif attribute == "IRR" %}
+                {% elif attribute == "IRR" %}<span style="color: red">*</span>
                     <input type='text' name='irr' style='width: 100px;' /> %
-                {% elif attribute == "Project Manager" %}
-                    <input type='text' name='project_manager' />
-                {% elif attribute == "Project Name" %}
+                {% elif attribute == "Project Team" %}<span style="color: red">*</span>
+                    <input type='text' name='project_team' />
+                {% elif attribute == "Project Name" %}<span style="color: red">*</span>
                     <input type='text' name='project_name' />
-                {% elif attribute == "Main Target" %}
+                {% elif attribute == "Main Target" %}<span style="color: red">*</span>
                     <input type='text' name='main_target' />    
-                {% elif attribute == "Project Status" %}
+                {% elif attribute == "Project Status" %}<span style="color: red">*</span>
                     <label><input type="radio" name="project_status" value="green" /> Green</label>
                     <label><input type="radio" name="project_status" value="yellow" /> Yellow</label>
                     <label><input type="radio" name="project_status" value="red" /> Red</label>
@@ -49,7 +49,11 @@
             </p>
     
             {% for date_attribute in date_attributes %}
-            <p>{{ date_attribute }}: <input type='date' name="{{ date_attribute|slugify }}" /></p>
+                {% if date_attribute == 'timing_kickoff' or date_attribute == 'timing_closure' %}
+                    <p>{{ date_attribute }}:<span style="color: red">*</span> <input type='date' name="{{ date_attribute|slugify }}" /></p>
+                {% else %}
+                    <p>{{ date_attribute }}: <input type='date' name="{{ date_attribute|slugify }}" /></p>
+                {% endif %}
             {% endfor %}
     
             {% for attribute in attributes_after_project_type_and_dates %}

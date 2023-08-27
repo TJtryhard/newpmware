@@ -216,7 +216,11 @@
             <td class="non-editable">Main Target</td>
             <td>{{ project.main_target }}</td>
             <td class="non-editable">Boundary Conditions</td>
-            <td>{{ project.boundary_conditions }}</td>
+            <td>
+                {% for bc in boundary_conditions %}
+                    <li> {{ bc }}</li>
+                {% endfor %}
+            </td>
         </tr>
         <tr>
             <td class="non-editable">Steering Committee</td>
@@ -226,9 +230,17 @@
         </tr>
         <tr>
             <td class="non-editable">Out of Scopy</td>
-            <td>{{ project.out_of_scope }}</td>
+            <td>
+                {% for os in out_of_scope %}
+                    <li> {{ os }}</li>
+                {% endfor %}
+            </td>
             <td class="non-editable">Risks and Uncertainties</td>
-            <td>{{ project.risk_uncertainties }}</td>
+            <td>
+                {% for risk in risks %}
+                    <li> {{ risk }}</li>
+                {% endfor %}
+            </td>
         </tr>
     </table>
     <button class="edit-button" onclick="enableEdit('general-information')">Edit</button>
@@ -335,8 +347,6 @@
 <h2>Closure</h2>
 <div id="section-d">
     <table>
-        <tr><td class="non-editable">Project Name:</td><td></td><td class="non-editable">Project Manager:</td><td></td></tr>
-        <tr><td class="non-editable">Project ID</td><td></td><td class="non-editable">Closure Date</td><td></td></tr>
         <tr><td class="non-editable">Closure Remarks 1</td><td></td><td class="non-editable">Closure Criteria 1</td><td></td></tr>
         <tr><td class="non-editable">Closure Remarks 2</td><td></td><td class="non-editable">Closure Criteria 2</td><td></td></tr>
         <tr><td class="non-editable">Closure Remarks 3</td><td></td><td class="non-editable">Closure Criteria 3</td><td></td></tr>
