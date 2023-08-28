@@ -336,12 +336,18 @@ def get_closure(project):
 
 
 def submit_new_project(request):
+
+    def get_inputs_from_post(base_name, count):
+        inputs = [request.POST.get(f'{base_name}_input_{i}', '') for i in range(1, count+1)]
+        return [i for i in inputs if i]  # 清除掉空的输入值
+
     if request.method == 'POST':
         # 从POST请求中获取数据
         project_name = request.POST.get('project_name')
-        project_team = request.POST.get('project_team')
+        projectid = request.POST.get('project_id')  # 调整了变量名以匹配模型
         estimated_budget = request.POST.get('estimated_budget')
         irr = request.POST.get('irr')
+        project_manager = request.POST.get('project_manager')
         project_type = request.POST.get('project_type')
         facilitator = request.POST.get('facilitator')
         main_target = request.POST.get('main_target')
@@ -372,9 +378,9 @@ def submit_new_project(request):
 
         # 从动态添加的字段中提取数据\
 
-        boundary_conditions = '~'.join([request.POST.get(f'boundary-conditions_input_{i}', '') for i in range(1, 5)])
-        out_of_scope = '~'.join([request.POST.get(f'out-of-scope_input_{i}', '') for i in range(1, 5)])
-        risk_uncertainties = '~'.join([request.POST.get(f'risk-and-uncertainties_input_{i}', '') for i in range(1, 5)])
+        boundary_conditions = '~'.join(get_inputs_from_post('boundary-conditions', 4))
+        out_of_scope = '~'.join(get_inputs_from_post('out-of-scope', 4))
+        risk_uncertainties = '~'.join(get_inputs_from_post('risk-and-uncertainties', 4))
 
         # 获取 Steering committee 的多选复选框的值并合并为一个字符串
         steering_committee = ','.join(request.POST.getlist('steering_committee'))
@@ -457,6 +463,7 @@ def update_project(request, projectid):
         project_name = request.POST.get('project_name')
         estimated_budget = request.POST.get('estimated_budget')
         irr = request.POST.get('irr')
+        project_manager = request.POST.get('project_manager')
         project_type = request.POST.get('project_type')
         facilitator = request.POST.get('facilitator')
         sponsor = request.POST.get('sponsor')
