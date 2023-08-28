@@ -24,13 +24,16 @@ th {
     color: #000000;
     font-weight: bold;
     vertical-align: top;
+    background-color: #d3d3d3; /* Gray background color for most cells */
 }
 
-th {
-    text-align: left;
-    /* background-color: #FFDAB9;*/
-    background-color: rgb(242, 162, 41);
-    font-weight: bold;
+/* Add background color to specific headers */
+th.bold {
+    background-color: rgb(242, 162, 41); /* Orange background */
+}
+
+.no-background {
+    background-color: transparent; /* No transparency in any cell */
 }
 
 .general-info {
@@ -42,10 +45,6 @@ td[colspan="2"] {
     font-weight: bold;
 }
 
-.extra-width {
-    width: 33%;
-}
-
 .extra-height {
     height: 45px;
 }
@@ -54,25 +53,16 @@ td[colspan="2"] {
     font-weight: bold;
 }
 
-.title {
-    color: orange;
-}
-
-.no-background {
-    background-color: transparent;
-}
-
 .button-container {
-    display: flex;  /* 使用Flex布局 */
-    justify-content: start;  /* 从左侧开始排列 */
-    gap: 10px;  /* 按钮之间的距离 */
+    display: flex;
+    justify-content: start;
+    gap: 10px;
 }
 
 .button, a.button {
     display: inline-block;
     width: 200px;
     height: 50px;
-    /*background-color: #FFDAB9;*/
     background-color: orange;
     text-align: center;
     border-radius: 10px;
@@ -80,27 +70,30 @@ td[colspan="2"] {
     font-weight: bold;
     line-height: 50px;
     cursor: pointer;
-    text-decoration: none;  /* 去除超链接下划线 */
+    text-decoration: none;
 }
+
 .equal-width {
-    width: 50%;  /* 你可以根据需求调整这个百分比 */
+    width: 50%;
 }
+
 .larger-width {
-    width: 25%;  /* 或根据需要调整 */
+    width: 25%;
 }
 
 .smaller-width {
-    width: 25%;  /* 或根据需要调整 */
+    width: 25%;
 }
+
 .short-width {
-    width: 50px; /* 或您期望的宽度 */
+    width: 50px;
 }
 
 .centered-cell {
     text-align: center;
     vertical-align: middle;
 }
+
 .smaller-width-half {
     width: 50%;
 }
-

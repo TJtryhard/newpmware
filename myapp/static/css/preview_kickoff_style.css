@@ -4,8 +4,9 @@
 }
 
 body {
-    margin: 8px;
-    background-color: #FFFFFF;
+    margin: 10px;
+    background-color: white;  /* 整个页面的背景颜色设置为白色 */
+    font-family: 'Arial', sans-serif; /* 设置字体为Arial */
 }
 
 table {
@@ -13,32 +14,24 @@ table {
     width: 100%;
     height: 85%;
     margin-bottom: 20px;
+    background-color: #f5e9cf; /* 淡绿色 */
 }
 
-td,
-th {
-    border: 2px solid black;
+td, th {
+    border: 1px solid black;
     text-align: left;
     padding: 8px;
-    font-family: 'Arial', sans-serif;
-    color: #000000;
     font-weight: bold;
     vertical-align: top;
 }
 
-th {
-    text-align: left;
-    background-color: #FFDAB9;
-    font-weight: bold;
+.bold, .general-info {
+    background-color: orange;  /* 橙色 */
 }
 
 .general-info {
     vertical-align: middle;
     text-align: center;
-}
-
-td[colspan="2"] {
-    font-weight: bold;
 }
 
 .extra-width {
@@ -49,56 +42,57 @@ td[colspan="2"] {
     height: 45px;
 }
 
-.bold {
-    font-weight: bold;
-}
-
 .title {
     color: orange;
 }
 
-.no-background {
-    background-color: transparent;
-}
-
 .button-container {
-    display: flex;  /* 使用Flex布局 */
-    justify-content: start;  /* 从左侧开始排列 */
-    gap: 10px;  /* 按钮之间的距离 */
+    display: flex;
+    justify-content: start;
+    gap: 10px;
 }
 
 .button, a.button {
     display: inline-block;
     width: 200px;
     height: 50px;
-    background-color: #FFDAB9;
+    background-color: orange;
     text-align: center;
     border-radius: 10px;
     color: black;
-    font-weight: bold;
     line-height: 50px;
     cursor: pointer;
-    text-decoration: none;  /* 去除超链接下划线 */
-}
-.equal-width {
-    width: 50%;  /* 你可以根据需求调整这个百分比 */
-}
-.larger-width {
-    width: 25%;  /* 或根据需要调整 */
+    text-decoration: none;
 }
 
-.smaller-width {
-    width: 25%;  /* 或根据需要调整 */
+.equal-width {
+    width: 50%;
 }
+
+.larger-width, .smaller-width {
+    width: 25%;
+}
+
 .short-width {
-    width: 50px; /* 或您期望的宽度 */
+    width: 50px;
 }
 
 .centered-cell {
     text-align: center;
     vertical-align: middle;
 }
+
 .smaller-width-half {
     width: 50%;
 }
 
+.small-font {
+    font-weight: normal;
+    font-size: 0.5em;
+}
+
+@media print {
+    .button-container {
+        display: none;
+    }
+}

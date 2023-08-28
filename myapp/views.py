@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404
 def start_page(request):
     if request.method == "POST":
         username = request.POST.get('username')
-        result = sign_in(username)
+        result = sign_in(username, request)
 
 
         if result:
@@ -32,6 +32,7 @@ def start_page(request):
         "message": message
     }
     return render(request, 'login.html', context)
+
 
 
 
@@ -82,9 +83,10 @@ def start_new_project(request):
 
             "Boundary Conditions",
             "Out of Scope",
+            "Sponsor",
             "Steering committee",
             "Facilitator",
-            "Sponsor",
+            #"Sponsor",
             "Risk and Uncertainties"
         ],
         # 保留映射，以备在模板中显示友好的名称
@@ -195,6 +197,7 @@ def preview_closure(request, project_id):
     return render(request, 'preview_closure.html', context)
 
 
+'''
 def sign_in(username):
 
     url = 'http://10.246.97.75:8011/sso/admin/getinfo'
@@ -260,7 +263,8 @@ def sign_in(username, request):
             'department': department
         }
         return instance
-'''
+
+
 
 def set_cookie_pm(username):
     response = HttpResponse()

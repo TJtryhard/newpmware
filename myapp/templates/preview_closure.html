@@ -6,30 +6,7 @@
     <link rel="stylesheet" href="/static/css/preview_closure_style.css">
     <title>Closure Review</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.js"></script>
-    <style>
-        /* Table styles */
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
 
-        table, th, td {
-            border: 2px solid black;
-            padding: 6px;
-        }
-
-        .no-background {
-            background-color: transparent;
-        }
-
-        /* Printing styles */
-        @media print {
-            /* Hide the buttons when printing */
-            .button-container {
-                display: none;
-            }
-        }
-    </style>
 </head>
 
 <body>
@@ -39,44 +16,44 @@
 
         <table>
             <tr>
-                <th class="bold" colspan="2">Project Name: <span style="font-size: 50%;">{{ project.project_name }}</span></th>
-                <th class="bold" colspan="2">Project Manager: <span style="font-size: 50%;">{{ project.project_manager }}</span></th>
+                <th class="bold" colspan="2">Project Name: <span style="font-size: 80%;">{{ project.project_name }}</span></th>
+                <th class="bold" colspan="2">Project Manager: <span style="font-size: 80%;">{{ project.project_manager }}</span></th>
             </tr>
             <tr>
                 <th class="bold general-info" rowspan="10">General Information</th>
-                <td>Project Type: <span style="font-size: 50%;">{{ project.project_type }}</span></td>
-                <td class="larger-width">Estimated Budget: <span style="font-size: 50%;">{{ project.estimated_budget }}KCNY</span></td>
-                <td class="larger-width">IRR/Benefit: <span style="font-size: 50%;">{{ project.irr }}%</span></td>
+                <td>Project Type: <span style="font-size: 80%;">{{ project.project_type }}</span></td>
+                <td class="larger-width">Estimated Budget: <span style="font-size: 80%;">{{ project.estimated_budget }}KCNY</span></td>
+                <td class="larger-width">IRR/Benefit: <span style="font-size: 80%;">{{ project.irr }}%</span></td>
             </tr>
             <tr>
                 <td class="no-background" colspan="4">Project File Location: 【TBA】</td>
             </tr>
             <tr>
-                <td class="no-background" colspan="3">Project Team: <span style="font-size: 50%;">{{ project.project_team }}</span></td>
+                <td class="no-background" colspan="3">Project Team: <span style="font-size: 80%;">{{ project.project_team }}</span></td>
             </tr>
             <tr>
                 <td rowspan="2">Timing & (Major Milestone Plan):</td>
-                <td class="smaller-width">Kick Off: <span style="font-size: 50%;">{{ project.timing_kickoff }}</span></td>
-                <td class="smaller-width">Milestone1: <span style="font-size: 50%;">{{ project.timing_milestone1 }}</span></td>
+                <td class="smaller-width">Kick Off: <span style="font-size: 80%;">{{ project.timing_kickoff }}</span></td>
+                <td class="smaller-width">Milestone1: <span style="font-size: 80%;">{{ project.timing_milestone1 }}</span></td>
             </tr>
             <tr>
-                <td class="smaller-width">Milestone2: <span style="font-size: 50%;">{{ project.timing_milestone2 }}</span></td>
-                <td class="smaller-width">Closure: <span style="font-size: 50%;">{{ project.timing_closure }}</span></td>
+                <td class="smaller-width">Milestone2: <span style="font-size: 80%;">{{ project.timing_milestone2 }}</span></td>
+                <td class="smaller-width">Closure: <span style="font-size: 80%;">{{ project.timing_closure }}</span></td>
             </tr>
             <tr>
-                <td class="no-background extra-height" colspan="3">Main Target: <span style="font-size: 50%;">{{ project.main_target }}</span></td>
+                <td class="no-background extra-height" colspan="3">Main Target: <span style="font-size: 80%;">{{ project.main_target }}</span></td>
             </tr>
             <tr>
-                <td class="no-background extra-height" colspan="3">Boundary Conditions: <span style="font-size: 50%;">{{ project.boundary_conditions }}</span></td>
+                <td class="no-background extra-height" colspan="3">Boundary Conditions: <span style="font-size: 80%;">{{ project.boundary_conditions }}</span></td>
             </tr>
             <tr>
-                <td class="no-background extra-height" colspan="3">Out of Scope: <span style="font-size: 50%;">{{ project.out_of_scope }}</span></td>
+                <td class="no-background extra-height" colspan="3">Out of Scope: <span style="font-size: 80%;">{{ project.out_of_scope }}</span></td>
             </tr>
             <tr>
-                <td class="no-background extra-height" colspan="3">Steering Committee: <span style="font-size: 50%;">{{ project.steering_committee }}</span></td>
+                <td class="no-background extra-height" colspan="3">Steering Committee: <span style="font-size: 80%;">{{ project.steering_committee }}</span></td>
             </tr>
             <tr>
-                <td class="no-background extra-height" colspan="3">Potential Risk & Uncertainties: <span style="font-size: 50%;">{{ project.risk_uncertainties }}</span></td>
+                <td class="no-background extra-height" colspan="3">Potential Risk & Uncertainties: <span style="font-size: 80%;">{{ project.risk_uncertainties }}</span></td>
             </tr>
             <tr>
                 <th class="bold general-info" rowspan="3">Sub-target & Success Criteria:</th>
@@ -88,16 +65,16 @@
             </tr>
             <tr>
                 <td class="extra-height">
-                    <span style="font-size: 50%;">{{ closure.sub_target1 }}</span><br>
-                    <span style="font-size: 50%;">{{ closure.sub_target2 }}</span><br>
-                    <span style="font-size: 50%;">{{ closure.sub_target3 }}</span><br>
-                    <span style="font-size: 50%;">{{ closure.sub_target4 }}</span>
+                    <span style="font-size: 80%;">{{ closure.sub_target1 }}</span><br>
+                    <span style="font-size: 80%;">{{ closure.sub_target2 }}</span><br>
+                    <span style="font-size: 80%;">{{ closure.sub_target3 }}</span><br>
+                    <span style="font-size: 80%;">{{ closure.sub_target4 }}</span>
                 </td>
                 <td class="extra-height" colspan="2">
-                    <span style="font-size: 50%;">{{ closure.success_criteria1 }}</span><br>
-                    <span style="font-size: 50%;">{{ closure.success_criteria2 }}</span><br>
-                    <span style="font-size: 50%;">{{ closure.success_criteria3 }}</span><br>
-                    <span style="font-size: 50%;">{{ closure.success_criteria4 }}</span>
+                    <span style="font-size: 80%;">{{ closure.success_criteria1 }}</span><br>
+                    <span style="font-size: 80%;">{{ closure.success_criteria2 }}</span><br>
+                    <span style="font-size: 80%;">{{ closure.success_criteria3 }}</span><br>
+                    <span style="font-size: 80%;">{{ closure.success_criteria4 }}</span>
                 </td>
             </tr>
         </table>
