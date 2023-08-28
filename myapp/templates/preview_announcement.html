@@ -43,16 +43,27 @@
                 <td class="no-background extra-height" colspan="3">Main Target: <span style="font-size: 80%;">{{ project.main_target }}</span></td>
             </tr>
             <tr>
-                <td class="no-background extra-height" colspan="3">Boundary Conditions: <span style="font-size: 80%;">{{ project.boundary_conditions }}</span></td>
+                <td class="no-background extra-height" colspan="3">
+                    Boundary Conditions: <span style="font-size: 80%;">{% for bc in boundary_conditions %}
+                    <li> {{ bc }}</li>
+                {% endfor %}</span>
+                </td>
             </tr>
             <tr>
-                <td class="no-background extra-height" colspan="3">Out of Scope: <span style="font-size: 80%;">{{ project.out_of_scope }}</span></td>
+                <td class="no-background extra-height" colspan="3">Out of Scope: <span style="font-size: 80%;">{% for os in out_of_scope %}
+                    <li> {{ os }}</li>
+                {% endfor %}</span></td>
             </tr>
             <tr>
                 <td class="no-background extra-height" colspan="3">Steering Committee: <span style="font-size: 80%;">{{ project.steering_committee }}</span></td>
             </tr>
             <tr>
-                <td class="no-background extra-height" colspan="3">Potential Risk & Uncertainties: <span style="font-size: 80%;">{{ project.risk_uncertainties }}</span></td>
+                <td class="no-background extra-height" colspan="3">Potential Risk & Uncertainties:
+                    <span style="font-size: 80%;">
+                    {% for risk in risks %}
+                        <li> {{ risk }}</li>
+                    {% endfor %}</span>
+                </td>
             </tr>
             <tr>
                 <th class="bold general-info" rowspan="3">Initial Situation & General Concept</th>

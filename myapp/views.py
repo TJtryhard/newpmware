@@ -16,7 +16,7 @@ from django.shortcuts import get_object_or_404
 def start_page(request):
     if request.method == "POST":
         username = request.POST.get('username')
-        result = sign_in(username, request)
+        result = sign_in(username)
 
 
         if result:
@@ -104,13 +104,10 @@ def project_site(request, project_id):
         success_message = 'Update fail'
 
     boundary_conditions = project.boundary_conditions.split("~")
-    boundary_conditions = boundary_conditions[:-1]
 
     out_of_scope = project.out_of_scope.split("~")
-    out_of_scope = out_of_scope[:-1]
 
     risks = project.risk_uncertainties.split("~")
-    risks = risks[:-1]
 
     try:
         Announcement.objects.get(projectid=project)
@@ -166,11 +163,20 @@ def preview_announcement(request, project_id):
 
     announcement = get_object_or_404(Announcement, projectid=project_id)
 
+    boundary_conditions = project.boundary_conditions.split("~")
+
+    out_of_scope = project.out_of_scope.split("~")
+
+    risks = project.risk_uncertainties.split("~")
+
     context = {
         'title': 'Announcement Review',
         'project': project,
         'announcement': announcement,
-        'project_id': project_id
+        'project_id': project_id,
+        'boundary_conditions': boundary_conditions,
+        'out_of_scope': out_of_scope,
+        'risks': risks,
     }
 
     return render(request, 'preview_announcement.html', context)
@@ -218,7 +224,6 @@ def preview_closure(request, project_id):
     return render(request, 'preview_closure.html', context)
 
 
-'''
 def sign_in(username):
 
     url = 'http://10.246.97.75:8011/sso/admin/getinfo'
@@ -248,6 +253,7 @@ def sign_in(username):
             return instance
     else:
         return False
+
 
 
 
@@ -284,7 +290,7 @@ def sign_in(username, request):
             'department': department
         }
         return instance
-
+'''
 
 
 def set_cookie_pm(username):
@@ -347,7 +353,7 @@ def submit_new_project(request):
         projectid = request.POST.get('project_id')  # 调整了变量名以匹配模型
         estimated_budget = request.POST.get('estimated_budget')
         irr = request.POST.get('irr')
-        project_manager = request.POST.get('project_manager')
+        project_team = request.POST.get('project_team')
         project_type = request.POST.get('project_type')
         facilitator = request.POST.get('facilitator')
         main_target = request.POST.get('main_target')
@@ -486,7 +492,7 @@ def update_project(request, projectid):
 
         project = Projects.objects.get(projectid=projectid)
         project.project_name=project_name
-        project.project_manager=project_manager
+        #project.project_manager=project_manager
         project.project_type=project_type
         project.estimated_budget=estimated_budget
         project.irr=irr
