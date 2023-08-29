@@ -3,38 +3,148 @@
 
 <head>
     <meta charset="UTF-8">
+    
+    <!---
     <link rel="stylesheet" href="/static/css/preview_milestone_style.css">
+    -->
+
     <title>Milestone Review</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.js"></script>
     <style>
-        /* Added style for smaller font */
-        .smaller-font {
-            font-size: 50%;
-        }
+    /* Added style for smaller font */
+    .smaller-font {
+        font-size: 50%;
+    }
 
-        /* Table styles */
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
+    /* Table styles */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
 
-        table, th, td {
-            border: 2px solid black;
-            padding: 6px;
-        }
+    table, th, td {
+        border: 2px solid black;
+        padding: 6px;
+        background-color: #f5e9cf;  /* 默认设置为淡橙色 */
+    }
 
-        .no-background {
-            background-color: transparent;
-        }
 
-        /* Printing styles */
-        @media print {
-            /* Hide the buttons when printing */
-            .button-container {
-                display: none;
-            }
+    /* Printing styles */
+    @media print {
+        /* Hide the buttons when printing */
+        .button-container {
+            display: none;
         }
-    </style>
+    }
+
+    @page {
+        size: A4 landscape;
+        margin: 0;
+    }
+
+    body {
+        margin: 10px;
+        background-color: white;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        height: 85%;
+        margin-bottom: 20px;
+    }
+
+    td, th {
+
+        text-align: left;
+        font-family: 'Arial', sans-serif;
+        color: #000000;
+        font-weight: bold;
+        vertical-align: top;
+    }
+
+    th {
+        text-align: left;
+        background-color: orange;  /* 保持此背景色 */
+        font-weight: bold;
+    }
+
+    .general-info {
+        vertical-align: middle;
+        text-align: center;
+    }
+
+    td[colspan="2"] {
+        font-weight: bold;
+    }
+
+    .extra-width {
+        width: 33%;
+    }
+
+    .extra-height {
+        height: 45px;
+    }
+
+    .bold {
+        font-weight: bold;
+    }
+
+    .title {
+        color: orange;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: start;
+        gap: 10px;
+    }
+
+    .button, a.button {
+        display: inline-block;
+        width: 200px;
+        height: 50px;
+        background-color: orange;
+        text-align: center;
+        border-radius: 10px;
+        color: black;
+        font-weight: bold;
+        line-height: 50px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .equal-width {
+        width: 50%;
+    }
+
+    .larger-width {
+        width: 25%;
+    }
+
+    .smaller-width {
+        width: 25%;
+    }
+
+    .short-width {
+        width: 50px;
+    }
+
+    .centered-cell {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .smaller-width-half {
+        width: 50%;
+    }
+
+    .smaller-font {
+        font-size: 80%;
+    }
+
+</style>
+
 </head>
 
 <body>
@@ -52,20 +162,20 @@
                 <col style="width: 12%;">
             </colgroup>
             <tr>
-                <th class="bold orange-bg" colspan="2">Project Name: <span>{{ project.project_name }}</span></th>
-                <th class="bold orange-bg" colspan="5">Project Manager: <span>{{ project.project_manager }}</span></th>
+                <th class="bold" colspan="2">Project Name: <span class="smaller-font">{{ project.project_name }}</span></th>
+                <th class="bold" colspan="5">Project Manager: <span class="smaller-font">{{ project.project_manager }}</span></th>
             </tr>
             <tr>
-                <th class="bold short-width general-info orange-bg" rowspan="5">General Information</th>
-                <td>SPA or PLP: <span>{{ project.project_type }}</span></td>
-                <td colspan="2">Estimated Budget: <span>{{ project.estimated_budget }}KCNY</span></td>
-                <td colspan="3">IRR/Benefit: <span>{{ project.irr }}%</span></td>
+                <th class="bold short-width general-info" style="text-align: center; vertical-align: middle;" rowspan="5">General Information</th>
+                <td>SPA or PLP: <span class="smaller-font">{{ project.project_type }}</span></td>
+                <td colspan="2">Estimated Budget: <span class="smaller-font">{{ project.estimated_budget }}KCNY</span></td>
+                <td colspan="3">IRR/Benefit: <span class="smaller-font">{{ project.irr }}%</span></td>
             </tr>
             <tr>
-                <td colspan="6">Steering Committee: <span>{{ project.steering_committee }}</span></td>
+                <td class="no-background" colspan="6">Steering Committee: <span class="smaller-font">{{ project.steering_committee }}</span></td>
             </tr>
             <tr class="boundary-height">
-                <td colspan="6">Boundary Condition: <span>{{ project.boundary_conditions }}</span></td>
+                <td class="no-background" colspan="6">Boundary Condition: <span class="smaller-font">{{ project.boundary_conditions }}</span></td>
             </tr>
             <tr class="timing-height">
                 <td rowspan="2">Project Performace Cockpit</td>
@@ -76,36 +186,36 @@
                 <td>Risks</td>
             </tr>
             <tr class="fixed-height">
-                <td><span>{{ milestones.ppc_deliverable }}</span></td>
-                <td><span>{{ milestones.ppc_timing }}</span></td>
-                <td><span>{{ milestones.ppc_budget }}</span></td>
-                <td><span>{{ milestones.ppc_resources }}</span></td>
-                <td><span>{{ milestones.ppc_risks }}</span></td>
+                <td><span class="smaller-font">{{ milestones.ppc_deliverable }}</span></td>
+                <td><span class="smaller-font">{{ milestones.ppc_timing }}</span></td>
+                <td><span class="smaller-font">{{ milestones.ppc_budget }}</span></td>
+                <td><span class="smaller-font">{{ milestones.ppc_resources }}</span></td>
+                <td><span class="smaller-font">{{ milestones.ppc_risks }}</span></td>
             </tr>
             <tr>
-                <th class="bold short-width general-info orange-bg">Main Target</th>
-                <td colspan="6"><span>{{ project.main_target }}</span></td>
+                <th class="bold short-width general-info" style="text-align: center; vertical-align: middle;">Main Target</th>
+                <td class="no-background extra-height" colspan="6"><span class="smaller-font">{{ project.main_target }}</span></td>
             </tr>
             <tr>
-                <th class="bold short-width general-info orange-bg" rowspan="4">Project Status</th>
-                <td colspan="6">Milestone 1:<span> {{ milestones.deliverable_ms1 }}</span></td>
+                <th class="bold short-width general-info" style="text-align: center; vertical-align: middle;" rowspan="4">Project Status</th>
+                <td class="no-background extra-height" colspan="6">Milestone 1:<span class="smaller-font"> {{ milestones.deliverable_ms1 }}</span></td>
             </tr>
             <tr>
-                <td colspan="6">Milestone 2:<span> {{ milestones.deliverable_ms2 }}</span></td>
+                <td class="no-background extra-height" colspan="6">Milestone 2:<span class="smaller-font"> {{ milestones.deliverable_ms2 }}</span></td>
             </tr>
             <tr>
-                <td colspan="6">Milestone 3:<span> {{ milestones.deliverable_ms3 }}</span></td>
+                <td class="no-background extra-height" colspan="6">Milestone 3:<span class="smaller-font"> {{ milestones.deliverable_ms3 }}</span></td>
             </tr>
             <tr>
-                <td colspan="6">Closure:<span> {{ milestones.deliverable_closure }}</span></td>
+                <td class="no-background extra-height" colspan="6">Closure:<span class="smaller-font"> {{ milestones.deliverable_closure }}</span></td>
             </tr>
             <tr>
-                <th class="bold orange-bg" rowspan="2">Next Decisions to be Made</th>
-                <td colspan="6" rowspan="2"><span>{{ milestones.next_step }}</span></td>
+                <th class="bold" rowspan="2" style="text-align: center; vertical-align: middle;">Next Decisions to be Made</th>
+                <td class="extra-height" colspan="6" rowspan="2"><span class="smaller-font">{{ milestones.next_step }}</span></td>
             </tr>
         </table>
         
-    
+        
     </div>
 
     <div class="button-container">

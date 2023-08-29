@@ -1,99 +1,132 @@
-@page {
-    size: A4 landscape;
-    margin: 0;
-}
 
-body {
-    margin: 10px;
-    background-color: #FFFFFF;
-}
+    /* Added style for smaller font */
+    .smaller-font {
+        font-size: 50%;
+    }
 
-table {
-    border-collapse: collapse;
-    width: 100%;
-    height: 85%;
-    margin-bottom: 20px;
-}
+    /* Table styles */
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
 
-td,
-th {
-    border: 1px solid black;
-    text-align: left;
-    padding: 8px;
-    font-family: 'Arial', sans-serif;
-    color: #000000;
-    font-weight: bold;
-    vertical-align: top;
-    background-color: #d3d3d3; /* Gray background color for most cells */
-}
+    table, th, td {
+        border: 2px solid black;
+        padding: 6px;
+        background-color: #f5e9cf;  /* 默认设置为淡橙色 */
+    }
 
-/* Add background color to specific headers */
-th.bold {
-    background-color: rgb(242, 162, 41); /* Orange background */
-}
 
-.no-background {
-    background-color: transparent; /* No transparency in any cell */
-}
+    /* Printing styles */
+    @media print {
+        /* Hide the buttons when printing */
+        .button-container {
+            display: none;
+        }
+    }
 
-.general-info {
-    vertical-align: middle;
-    text-align: center;
-}
+    @page {
+        size: A4 landscape;
+        margin: 0;
+    }
 
-td[colspan="2"] {
-    font-weight: bold;
-}
+    body {
+        margin: 10px;
+        background-color: white;
+    }
 
-.extra-height {
-    height: 45px;
-}
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        height: 85%;
+        margin-bottom: 20px;
+    }
 
-.bold {
-    font-weight: bold;
-}
+    td, th {
 
-.button-container {
-    display: flex;
-    justify-content: start;
-    gap: 10px;
-}
+        text-align: left;
+        font-family: 'Arial', sans-serif;
+        color: #000000;
+        font-weight: bold;
+        vertical-align: top;
+    }
 
-.button, a.button {
-    display: inline-block;
-    width: 200px;
-    height: 50px;
-    background-color: orange;
-    text-align: center;
-    border-radius: 10px;
-    color: black;
-    font-weight: bold;
-    line-height: 50px;
-    cursor: pointer;
-    text-decoration: none;
-}
+    th {
+        text-align: left;
+        background-color: orange;  /* 保持此背景色 */
+        font-weight: bold;
+    }
 
-.equal-width {
-    width: 50%;
-}
+    .general-info {
+        vertical-align: middle;
+        text-align: center;
+    }
 
-.larger-width {
-    width: 25%;
-}
+    td[colspan="2"] {
+        font-weight: bold;
+    }
 
-.smaller-width {
-    width: 25%;
-}
+    .extra-width {
+        width: 33%;
+    }
 
-.short-width {
-    width: 50px;
-}
+    .extra-height {
+        height: 45px;
+    }
 
-.centered-cell {
-    text-align: center;
-    vertical-align: middle;
-}
+    .bold {
+        font-weight: bold;
+    }
 
-.smaller-width-half {
-    width: 50%;
-}
+    .title {
+        color: orange;
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: start;
+        gap: 10px;
+    }
+
+    .button, a.button {
+        display: inline-block;
+        width: 200px;
+        height: 50px;
+        background-color: orange;
+        text-align: center;
+        border-radius: 10px;
+        color: black;
+        font-weight: bold;
+        line-height: 50px;
+        cursor: pointer;
+        text-decoration: none;
+    }
+
+    .equal-width {
+        width: 50%;
+    }
+
+    .larger-width {
+        width: 25%;
+    }
+
+    .smaller-width {
+        width: 25%;
+    }
+
+    .short-width {
+        width: 50px;
+    }
+
+    .centered-cell {
+        text-align: center;
+        vertical-align: middle;
+    }
+
+    .smaller-width-half {
+        width: 50%;
+    }
+
+    .smaller-font {
+        font-size: 80%;
+    }
